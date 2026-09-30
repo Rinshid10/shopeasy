@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Card } from "@/components/ui/Card";
 import { CheckIcon, CloseIcon } from "@/components/ui/icons";
 
 interface ProductProsConsProps {
@@ -15,9 +14,9 @@ interface PointListProps {
 
 function PointList({ title, points, icon }: PointListProps) {
   return (
-    <Card className="p-4">
-      <h3 className="font-semibold text-ink">{title}</h3>
-      <ul className="mt-2 flex flex-col gap-2">
+    <div className="rounded-2xl bg-surface-muted p-4 sm:p-5">
+      <h3 className="font-bold text-ink">{title}</h3>
+      <ul className="mt-3 flex flex-col gap-2.5">
         {points.map((point) => (
           <li key={point} className="flex items-start gap-2 text-sm text-ink sm:text-base">
             {icon}
@@ -25,7 +24,7 @@ function PointList({ title, points, icon }: PointListProps) {
           </li>
         ))}
       </ul>
-    </Card>
+    </div>
   );
 }
 
@@ -33,14 +32,14 @@ export function ProductProsCons({ pros, cons }: ProductProsConsProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <PointList
-        title="Pros"
+        title="What we like"
         points={pros}
-        icon={<CheckIcon className="mt-0.5 size-5 shrink-0 text-positive" />}
+        icon={<CheckIcon className="mt-0.5 size-5 shrink-0 text-ink" />}
       />
       <PointList
-        title="Cons"
+        title="What to keep in mind"
         points={cons}
-        icon={<CloseIcon className="mt-0.5 size-5 shrink-0 text-negative" />}
+        icon={<CloseIcon className="mt-0.5 size-5 shrink-0 text-ink-muted" />}
       />
     </div>
   );

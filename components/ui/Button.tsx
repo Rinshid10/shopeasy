@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-export type ButtonVariant = "primary" | "accent" | "outline";
+export type ButtonVariant = "primary" | "brand" | "outline";
 export type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonStyleOptions {
@@ -12,13 +12,13 @@ interface ButtonStyleOptions {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-brand text-white hover:bg-brand-strong",
-  accent: "bg-accent text-white hover:bg-accent-strong",
-  outline: "border border-line bg-surface text-ink hover:bg-surface-muted",
+  primary: "rounded-xl bg-ink text-surface hover:bg-ink-raised",
+  brand: "rounded-full bg-brand text-surface shadow-lg shadow-brand/25 hover:bg-brand-strong",
+  outline: "rounded-xl border border-line bg-surface text-ink hover:border-ink",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: "min-h-10 px-3 py-2 text-sm",
+  sm: "min-h-9 px-2 py-2 text-xs whitespace-nowrap",
   md: "min-h-11 px-4 py-2 text-sm",
   lg: "min-h-12 px-6 py-3 text-base",
 };
@@ -31,7 +31,7 @@ export function buttonClasses({
   className,
 }: ButtonStyleOptions = {}): string {
   return cn(
-    "inline-flex items-center justify-center gap-2 rounded-lg text-center leading-tight font-semibold transition-colors",
+    "inline-flex items-center justify-center gap-2 text-center leading-tight font-semibold transition-colors",
     "disabled:cursor-not-allowed disabled:opacity-60",
     variantClasses[variant],
     sizeClasses[size],

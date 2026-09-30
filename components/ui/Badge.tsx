@@ -1,12 +1,26 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/cn";
+
+type BadgeVariant = "neutral" | "highlight";
 
 interface BadgeProps {
+  variant?: BadgeVariant;
   children: ReactNode;
 }
 
-export function Badge({ children }: BadgeProps) {
+const variantClasses: Record<BadgeVariant, string> = {
+  neutral: "bg-surface-muted text-ink",
+  highlight: "bg-tint-blue text-brand-strong",
+};
+
+export function Badge({ variant = "neutral", children }: BadgeProps) {
   return (
-    <span className="inline-flex items-center rounded-full bg-brand-soft px-2.5 py-0.5 text-xs font-medium text-brand-strong">
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full px-3 py-1.5 text-xs leading-none font-semibold",
+        variantClasses[variant],
+      )}
+    >
       {children}
     </span>
   );

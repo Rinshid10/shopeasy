@@ -66,10 +66,65 @@ export function ChevronRightIcon(props: IconProps) {
   );
 }
 
-export function ExternalLinkIcon(props: IconProps) {
+export function ArrowRightIcon(props: IconProps) {
   return (
     <IconBase {...props}>
-      <path d="M14 5h5v5M19 5l-8 8M18 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4" />
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </IconBase>
+  );
+}
+
+export function CubeIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="m12 3-8 4v10l8 4 8-4V7l-8-4Z" />
+      <path d="m4 7 8 4 8-4M12 11v10" />
+    </IconBase>
+  );
+}
+
+export function TagIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M3 11.5V4h7.5L21 14.5 13.5 22 3 11.5Z" />
+      <circle cx="7.5" cy="8.5" r="1.25" />
+    </IconBase>
+  );
+}
+
+export function TruckIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M2 6h11v10H2zM13 9h4l4 4v3h-8" />
+      <circle cx="6.5" cy="17.5" r="1.75" />
+      <circle cx="17" cy="17.5" r="1.75" />
+    </IconBase>
+  );
+}
+
+export function ShieldCheckIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6l-7-3Z" />
+      <path d="m9 12 2 2 4-4" />
+    </IconBase>
+  );
+}
+
+/** A solid star, unlike the outline icons above. */
+export function StarIcon({ className = "size-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
+      <path d="m12 2.5 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.5l-5.9 3.2 1.2-6.6-4.8-4.6 6.6-.9L12 2.5Z" />
+    </svg>
+  );
+}
+
+export function ShoppingBagIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M5.5 8h13l-1 12h-11l-1-12Z" />
+      <path d="M9 11V7a3 3 0 0 1 6 0v4" />
     </IconBase>
   );
 }

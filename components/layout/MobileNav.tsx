@@ -31,7 +31,7 @@ export function MobileNav({ links }: MobileNavProps) {
   }, [isOpen]);
 
   return (
-    <div className="lg:hidden">
+    <>
       <button
         ref={toggleRef}
         type="button"
@@ -39,7 +39,7 @@ export function MobileNav({ links }: MobileNavProps) {
         aria-controls={panelId}
         aria-label={isOpen ? "Close menu" : "Open menu"}
         onClick={() => setIsOpen((open) => !open)}
-        className="flex size-11 items-center justify-center rounded-lg text-ink hover:bg-surface-muted"
+        className="flex size-10 items-center justify-center rounded-lg text-ink transition-colors hover:bg-surface-muted"
       >
         {isOpen ? <CloseIcon className="size-6" /> : <MenuIcon className="size-6" />}
       </button>
@@ -47,7 +47,7 @@ export function MobileNav({ links }: MobileNavProps) {
         id={panelId}
         aria-label="Mobile"
         hidden={!isOpen}
-        className="absolute inset-x-0 top-full border-b border-line bg-surface shadow-lg"
+        className="absolute inset-x-0 top-full border-t border-line bg-surface shadow-xl"
       >
         <ul className="mx-auto max-w-6xl px-4 py-2 sm:px-6">
           {links.map((link) => (
@@ -55,7 +55,7 @@ export function MobileNav({ links }: MobileNavProps) {
               <Link
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="block rounded-lg px-2 py-3 font-medium text-ink hover:bg-surface-muted hover:text-brand"
+                className="block rounded-lg px-2 py-3 font-medium text-ink transition-colors hover:bg-surface-muted hover:text-brand"
               >
                 {link.label}
               </Link>
@@ -63,6 +63,6 @@ export function MobileNav({ links }: MobileNavProps) {
           ))}
         </ul>
       </nav>
-    </div>
+    </>
   );
 }

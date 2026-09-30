@@ -2,22 +2,37 @@
 
 /* The site's colour palette. Every colour used in components comes from these tokens. */
 @theme {
-  --color-brand: #4338ca;
-  --color-brand-strong: #3730a3;
-  --color-brand-soft: #eef2ff;
+  /* Blue for highlights, links and the main call to action. */
+  --color-brand: #2563eb;
+  --color-brand-strong: #1d4ed8;
+  --color-brand-soft: #eff6ff;
 
-  --color-accent: #c2410c;
-  --color-accent-strong: #9a3412;
-
+  /* Navy for text, buy buttons and the footer. */
   --color-ink: #0f172a;
   --color-ink-muted: #475569;
+  /* For use on navy backgrounds: muted text, raised panels and borders. */
+  --color-ink-soft: #94a3b8;
+  --color-ink-raised: #1e293b;
+  --color-ink-line: #334155;
 
   --color-surface: #ffffff;
-  --color-surface-muted: #f8fafc;
+  --color-surface-muted: #f1f5f9;
+  /* Matches the left edge of the hero photo, so the photo blends into the banner. */
+  --color-surface-warm: #f4f4f4;
   --color-line: #e2e8f0;
 
+  /* Pastel card backgrounds. Each matches the background of a category picture. */
+  --color-tint-sky: #f1fafe;
+  --color-tint-lavender: #f3eefe;
+  --color-tint-pink: #fbeaf1;
+  --color-tint-mint: #e9f9f4;
+  --color-tint-peach: #fff5ee;
+  --color-tint-cream: #fef7e6;
+  --color-tint-blue: #ebf3fe;
+
+  /* Green for ratings and discount badges. */
   --color-positive: #15803d;
-  --color-negative: #b91c1c;
+  --color-positive-soft: #dcfce7;
 }
 
 @theme inline {
@@ -31,7 +46,29 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-brand);
+    outline: 2px solid var(--focus-ring-color, var(--color-brand));
     outline-offset: 2px;
+  }
+}
+
+/* Put on navy sections so focus outlines inside them switch to white. */
+@utility dark-section {
+  --focus-ring-color: var(--color-surface);
+}
+
+/* Fades the top and left edges of the hero photo so it blends into the banner. */
+@utility hero-photo-fade {
+  mask-image:
+    linear-gradient(to right, transparent 0%, black 18%),
+    linear-gradient(to bottom, transparent 0%, black 10%);
+  mask-composite: intersect;
+}
+
+/* Lets a row scroll sideways without showing a scrollbar. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }

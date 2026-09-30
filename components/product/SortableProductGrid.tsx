@@ -27,7 +27,7 @@ export function SortableProductGrid({ products }: SortableProductGridProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-ink-muted">
+        <p className="text-sm font-medium text-ink-muted">
           {products.length} {products.length === 1 ? "product" : "products"}
         </p>
         <div className="flex items-center gap-2">
@@ -38,7 +38,7 @@ export function SortableProductGrid({ products }: SortableProductGridProps) {
             id={selectId}
             value={sort}
             onChange={(event) => handleSortChange(event.target.value)}
-            className="min-h-10 rounded-lg border border-line bg-surface px-2 text-sm text-ink"
+            className="h-10 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink"
           >
             {productSortOptions.map((option) => (
               <option key={option.value} value={option.value}>
