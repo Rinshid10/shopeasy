@@ -13,6 +13,9 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: `${siteConfig.name} | ${siteConfig.tagline}`,
   description: siteConfig.description,
+  other: {
+    "cuelinks-verification": siteConfig.cuelinksVerification,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

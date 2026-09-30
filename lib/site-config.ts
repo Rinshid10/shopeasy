@@ -7,6 +7,7 @@ export const siteConfig = {
   locale: "en-IN",
   currency: "INR",
   contactEmail: "hello@example.com", // TODO: replace with your contact email
+  cuelinksVerification: "VERIFY-CL-YFRTLDHC",
   affiliate: {
     buttonLabel: "Check price on Flipkart",
     linkLabel: "Affiliate link",
