@@ -1,21 +1,14 @@
 // The Supabase project URL and publishable key. Both are public: the publishable key only
-// grants what the database's row level security policies allow.
+// grants what the database's row level security policies allow. Environment variables win
+// when set (e.g. on Netlify); otherwise the ShopEasy project's values are used, so a build
+// never fails just because they weren't configured.
 
-export const supabaseUrl = requireEnv(
-  "NEXT_PUBLIC_SUPABASE_URL",
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-);
-export const supabasePublishableKey = requireEnv(
-  "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-);
+export const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://kodjfjxztmjbjgcuyetn.supabase.co";
 
-function requireEnv(name: string, value: string | undefined): string {
-  if (!value) {
-    throw new Error(`${name} is not set. Copy .env.example to .env.local and fill it in.`);
-  }
-  return value;
-}
+export const supabasePublishableKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  "sb_publishable_egNWd0JefbuloyButXzOqA_7BHgTkiN";
 
 /**
  * The admin keeps its own login cookie, separate from the shop's, so being signed in to the

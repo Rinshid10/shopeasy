@@ -24,7 +24,7 @@ export function buildOrderMessage(order: Order): string {
   const { address } = order;
 
   return [
-    `*${siteConfig.name} order confirmed* ✅`,
+    `*${siteConfig.name} order confirmed* ✅`, 
     "",
     `*Order ID:* ${order.id}`,
     `*Placed on:* ${formatDateTime(order.placedAt)}`,
