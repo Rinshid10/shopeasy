@@ -42,11 +42,20 @@ export interface Order {
   cancelledAt?: string;
 }
 
+/** The store's delivery charge rule, set in the admin. */
+export interface DeliveryRule {
+  /** Rupees per order. 0 is free delivery. */
+  charge: number;
+  /** Orders at or above this subtotal deliver free. 0 means there is no such minimum. */
+  freeAbove: number;
+}
+
 export interface CheckoutState {
   cart: CartItem[];
   /** The saved delivery address, reused for the next order. */
   address: Address | null;
   paymentMethod: PaymentMethod;
-  /** Every order placed from this browser, newest first. */
+  /** Every order the visitor's account has placed, newest first. */
   orders: Order[];
+  delivery: DeliveryRule;
 }

@@ -33,9 +33,7 @@ export function PriceTiles({ counts }: PriceTilesProps) {
               TILE_STYLES[index % TILE_STYLES.length],
             )}
           >
-            <span className="text-xs font-semibold tracking-widest uppercase opacity-80">
-              Under
-            </span>
+            <span className="text-xs font-semibold tracking-widest uppercase">Under</span>
             <span className="text-2xl font-extrabold tracking-tight sm:text-3xl">
               {formatPrice(limit)}
             </span>

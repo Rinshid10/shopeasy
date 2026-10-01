@@ -11,6 +11,19 @@ interface CancelOrderButtonProps {
 /** Cancels an order after the shopper confirms, right in place (no pop-up dialog). */
 export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
   const [isConfirming, setIsConfirming] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function cancel() {
+    setIsCancelling(true);
+    setError(null);
+    try {
+      await cancelOrder(orderId);
+    } catch (cancelError) {
+      setError(cancelError instanceof Error ? cancelError.message : "Couldn't cancel the order.");
+      setIsCancelling(false);
+    }
+  }
 
   if (!isConfirming) {
     return (
@@ -33,13 +46,15 @@ export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
         <Button variant="outline" onClick={() => setIsConfirming(false)}>
           Keep Order
         </Button>
-        <Button
-          className="bg-negative text-surface hover:bg-negative/90"
-          onClick={() => cancelOrder(orderId)}
-        >
-          Yes, Cancel
+        <Button variant="danger" disabled={isCancelling} onClick={cancel}>
+          {isCancelling ? "Cancelling…" : "Yes, Cancel"}
         </Button>
       </div>
+      {error && (
+        <p role="alert" className="text-sm font-semibold text-negative">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

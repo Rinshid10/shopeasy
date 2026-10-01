@@ -4,6 +4,7 @@ export type {
   Address,
   CartItem,
   CheckoutState,
+  DeliveryRule,
   Order,
   OrderLine,
   OrderStatus,
@@ -11,3 +12,19 @@ export type {
 } from "./checkout";
 export type { BreadcrumbItem, NavLink } from "./navigation";
 export type { Product } from "./product";
+export type {
+  AdminOrder,
+  AdminOrderEvent,
+  AdminOrderStatus,
+  CodPaymentStatus,
+  Coupon,
+  CouponType,
+  Customer,
+  ListingStatus,
+  Payout,
+  PayoutStatus,
+  ProductInventory,
+  ReturnRequest,
+  ReturnStatus,
+  StoreSettings,
+} from "./admin";

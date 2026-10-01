@@ -14,6 +14,13 @@ interface ProductImageProps {
   shape?: ProductImageShape;
   /** Set on the main image of a page so the browser fetches it early. */
   preload?: boolean;
+  /** Load at once instead of when scrolled near, for pictures in the first screen. */
+  eager?: boolean;
+  /**
+   * The product name is already written right next to the picture, so screen readers
+   * should skip the picture instead of reading the name twice.
+   */
+  decorative?: boolean;
   /**
    * Pictures with the same name on two pages glide from one position to the other during
    * navigation. Use getProductImageTransitionName so the card and product page match.
@@ -40,6 +47,8 @@ export function ProductImage({
   sizes,
   shape = "square",
   preload = false,
+  eager = false,
+  decorative = false,
   transitionName,
 }: ProductImageProps) {
   const hasImage = product.imageUrl !== null;
@@ -54,10 +63,13 @@ export function ProductImage({
     >
       <Image
         src={product.imageUrl ?? PLACEHOLDER_IMAGE}
-        alt={hasImage ? product.title : `Placeholder picture for ${product.title}`}
+        alt={
+          decorative ? "" : hasImage ? product.title : `Placeholder picture for ${product.title}`
+        }
         fill
         sizes={sizes}
         preload={preload}
+        loading={eager && !preload ? "eager" : undefined}
         className={cn(
           "object-contain transition-transform duration-300 group-hover:scale-105",
           hasImage ? "p-2" : "p-[22%]",

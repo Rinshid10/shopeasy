@@ -10,11 +10,7 @@ interface LogoProps {
 
 export function Logo({ onDark = false }: LogoProps) {
   return (
-    <Link
-      href={routes.home}
-      aria-label={`${siteConfig.name} home`}
-      className="flex items-center gap-2.5 rounded-lg"
-    >
+    <Link href={routes.home} className="flex items-center gap-2.5 rounded-lg">
       <span
         aria-hidden="true"
         className="flex size-8 items-center justify-center rounded-lg bg-brand text-lg font-black text-surface md:size-10 md:rounded-xl md:text-2xl"

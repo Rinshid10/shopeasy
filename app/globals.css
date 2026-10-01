@@ -45,6 +45,13 @@
 
   /* Red for form errors. */
   --color-negative: #b91c1c;
+  --color-negative-soft: #fee2e2;
+
+  /* Admin status badges: each pairs a readable text colour with a soft background. */
+  --color-info: #1d4ed8;
+  --color-info-soft: #dbeafe;
+  --color-warning: #a14a00;
+  --color-warning-soft: #fef3c7;
 }
 
 @theme inline {
@@ -139,14 +146,17 @@
 }
 
 @keyframes enter-up {
+  /* Starts faint rather than invisible: browsers only count content as shown once it is
+     visible at all, and fully hidden starts would delay that by the animation time. */
   from {
-    opacity: 0;
+    opacity: 0.25;
     translate: 0 1rem;
   }
 }
 
 /*
- * Reveal on scroll: fades in and rises as the element enters the screen.
+ * Reveal on scroll: rises gently into place as the element enters the screen. It does
+ * not fade, so text below the fold is always fully readable (and passes contrast checks).
  * Driven by the scroll position in CSS, so it costs no JavaScript. Browsers without
  * scroll-driven animations simply show the element.
  */
@@ -162,8 +172,8 @@
 
 @keyframes reveal-up {
   from {
-    opacity: 0;
-    translate: 0 1.5rem;
+    translate: 0 2rem;
+    scale: 0.97;
   }
 }
 

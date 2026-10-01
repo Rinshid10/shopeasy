@@ -14,4 +14,22 @@ export const routes = {
   orderSuccess: "/checkout/success",
   orders: "/orders",
   orderDetails: (orderId: string) => `/orders/details?id=${encodeURIComponent(orderId)}`,
+  account: "/account",
+  /** The log in / register page, returning to `next` afterwards. */
+  login: (next: string) => `/account?next=${encodeURIComponent(next)}`,
+  admin: {
+    login: "/admin/login",
+    dashboard: "/admin",
+    orders: "/admin/orders",
+    order: (orderId: string) => `/admin/orders/${encodeURIComponent(orderId)}`,
+    products: "/admin/products",
+    newProduct: "/admin/products/new",
+    product: (slug: string) => `/admin/products/${slug}`,
+    inventory: "/admin/inventory",
+    customers: "/admin/customers",
+    coupons: "/admin/coupons",
+    returns: "/admin/returns",
+    payments: "/admin/payments",
+    settings: "/admin/settings",
+  },
 } as const;

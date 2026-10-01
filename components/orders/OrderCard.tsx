@@ -33,7 +33,7 @@ export function OrderCard({ order }: OrderCardProps) {
               isCancelled && "opacity-60 grayscale",
             )}
           >
-            <ProductImage product={line} sizes="80px" />
+            <ProductImage product={line} sizes="80px" decorative />
           </div>
         ))}
       </div>

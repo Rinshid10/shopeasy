@@ -18,5 +18,5 @@ export function useCartView(products: Product[]): CartView | null {
   }
 
   const lines = getCartLines(checkout.cart, products);
-  return { checkout, lines, summary: getPriceSummary(lines) };
+  return { checkout, lines, summary: getPriceSummary(lines, checkout.delivery) };
 }

@@ -226,6 +226,15 @@ export function ChatIcon(props: IconProps) {
   );
 }
 
+export function UserIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20.5c1.4-3.6 4.4-5.5 8-5.5s6.6 1.9 8 5.5" />
+    </IconBase>
+  );
+}
+
 export function PackageIcon(props: IconProps) {
   return (
     <IconBase {...props}>
@@ -239,6 +248,79 @@ export function ChevronLeftIcon(props: IconProps) {
   return (
     <IconBase {...props}>
       <path d="m15 6-6 6 6 6" />
+    </IconBase>
+  );
+}
+
+export function GridIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="4" y="4" width="7" height="7" rx="1.5" />
+      <rect x="13" y="4" width="7" height="7" rx="1.5" />
+      <rect x="4" y="13" width="7" height="7" rx="1.5" />
+      <rect x="13" y="13" width="7" height="7" rx="1.5" />
+    </IconBase>
+  );
+}
+
+export function UsersIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="9" cy="8" r="3.5" />
+      <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2A6.5 6.5 0 0 1 21.5 20" />
+    </IconBase>
+  );
+}
+
+export function TicketIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4V8Z" />
+      <path d="M14 6v12" strokeDasharray="2 2" />
+    </IconBase>
+  );
+}
+
+export function ReturnIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M9 14 4 9l5-5" />
+      <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
+    </IconBase>
+  );
+}
+
+export function SettingsIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
+    </IconBase>
+  );
+}
+
+export function StoreIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M4 10v10h16V10M3 4h18l-1.5 6h-15L3 4ZM9 20v-5h6v5" />
+    </IconBase>
+  );
+}
+
+export function AlertIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M12 3 2.5 20h19L12 3Z" />
+      <path d="M12 10v4M12 17h.01" />
+    </IconBase>
+  );
+}
+
+export function PrinterIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M7 9V3h10v6M7 17H4v-7h16v7h-3" />
+      <rect x="7" y="14" width="10" height="7" rx="1" />
     </IconBase>
   );
 }

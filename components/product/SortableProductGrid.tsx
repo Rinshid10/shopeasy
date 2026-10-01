@@ -48,7 +48,7 @@ export function SortableProductGrid({ products }: SortableProductGridProps) {
           </select>
         </div>
       </div>
-      <ProductGrid products={sortProducts(products, sort)} />
+      <ProductGrid products={sortProducts(products, sort)} eagerCount={4} />
     </div>
   );
 }

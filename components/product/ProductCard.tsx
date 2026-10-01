@@ -16,9 +16,11 @@ interface ProductCardProps {
    * product on the same page: each picture name may appear only once per page.
    */
   morph?: boolean;
+  /** Load the picture at once, for cards in the first screen of a page. */
+  eager?: boolean;
 }
 
-export function ProductCard({ product, morph = true }: ProductCardProps) {
+export function ProductCard({ product, morph = true, eager = false }: ProductCardProps) {
   return (
     <Card
       as="article"
@@ -32,6 +34,8 @@ export function ProductCard({ product, morph = true }: ProductCardProps) {
           product={product}
           sizes={CARD_IMAGE_SIZES}
           shape="wide"
+          eager={eager}
+          decorative
           transitionName={morph ? getProductImageTransitionName(product.slug) : undefined}
         />
         <h3 className="line-clamp-2 text-sm leading-snug font-medium text-ink transition-colors group-hover:text-brand">

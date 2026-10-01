@@ -13,7 +13,7 @@ export function OrderLines({ lines }: OrderLinesProps) {
       {lines.map((line) => (
         <li key={line.productSlug} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
           <div className="w-16 shrink-0">
-            <ProductImage product={line} sizes="64px" />
+            <ProductImage product={line} sizes="64px" decorative />
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
             <p className="line-clamp-2 text-sm font-medium text-ink">{line.title}</p>

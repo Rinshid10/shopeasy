@@ -4,7 +4,13 @@ import { Logo } from "@/components/layout/Logo";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { SearchForm } from "@/components/product/SearchForm";
 import { Container } from "@/components/ui/Container";
-import { ChevronRightIcon, MenuIcon, PackageIcon, SearchIcon } from "@/components/ui/icons";
+import {
+  ChevronRightIcon,
+  MenuIcon,
+  PackageIcon,
+  SearchIcon,
+  UserIcon,
+} from "@/components/ui/icons";
 import { getCategories } from "@/lib/categories";
 import { routes } from "@/lib/routes";
 import type { NavLink } from "@/types";
@@ -42,9 +48,23 @@ export async function Header() {
           >
             <PackageIcon className="size-6" />
           </Link>
+          <Link
+            href={routes.account}
+            aria-label="My Account"
+            title="My Account"
+            className="hidden size-10 pressable items-center justify-center rounded-lg text-ink hover:bg-surface-muted md:flex md:size-11"
+          >
+            <UserIcon className="size-6" />
+          </Link>
           <CartLink />
           <div className="lg:hidden">
-            <MobileNav links={[{ label: "My Orders", href: routes.orders }, ...categoryLinks]} />
+            <MobileNav
+              links={[
+                { label: "My Orders", href: routes.orders },
+                { label: "My Account", href: routes.account },
+                ...categoryLinks,
+              ]}
+            />
           </div>
         </div>
       </Container>

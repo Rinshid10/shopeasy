@@ -1,5 +1,5 @@
 import { siteConfig } from "@/lib/site-config";
-import type { Address, CartItem, Order, Product } from "@/types";
+import type { CartItem, DeliveryRule, Product } from "@/types";
 
 export interface CartLine {
   product: Product;
@@ -23,13 +23,18 @@ export function getCartLines(cart: CartItem[], products: Product[]): CartLine[] 
   });
 }
 
-export function getPriceSummary(lines: CartLine[]): PriceSummary {
+/** Works out the delivery charge the same way the database does when placing the order. */
+export function getDeliveryCharge(subtotal: number, rule: DeliveryRule): number {
+  return rule.freeAbove > 0 && subtotal >= rule.freeAbove ? 0 : rule.charge;
+}
+
+export function getPriceSummary(lines: CartLine[], delivery: DeliveryRule): PriceSummary {
   const totalMrp = lines.reduce(
     (sum, { product, quantity }) => sum + (product.mrp ?? product.price) * quantity,
     0,
   );
   const subtotal = lines.reduce((sum, { product, quantity }) => sum + product.price * quantity, 0);
-  const deliveryCharge = lines.length > 0 ? siteConfig.store.deliveryCharge : 0;
+  const deliveryCharge = lines.length > 0 ? getDeliveryCharge(subtotal, delivery) : 0;
 
   return {
     totalMrp,
@@ -37,31 +42,6 @@ export function getPriceSummary(lines: CartLine[]): PriceSummary {
     deliveryCharge,
     total: subtotal + deliveryCharge,
     itemCount: lines.reduce((sum, { quantity }) => sum + quantity, 0),
-  };
-}
-
-function createOrderId(): string {
-  const random = Math.floor(Math.random() * 1296)
-    .toString(36)
-    .padStart(2, "0");
-  return `SE${Date.now().toString(36)}${random}`.toUpperCase();
-}
-
-export function createOrder(lines: CartLine[], address: Address): Order {
-  return {
-    id: createOrderId(),
-    status: "placed",
-    placedAt: new Date().toISOString(),
-    lines: lines.map(({ product, quantity }) => ({
-      productSlug: product.slug,
-      title: product.title,
-      imageUrl: product.imageUrl,
-      price: product.price,
-      quantity,
-    })),
-    address,
-    paymentMethod: "cod",
-    total: getPriceSummary(lines).total,
   };
 }
 

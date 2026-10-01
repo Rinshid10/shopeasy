@@ -32,7 +32,7 @@ export function StickyBuyBar({ product, mainButtonId }: StickyBuyBarProps) {
   return (
     <div
       className={cn(
-        "bottom-action-bar fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 gap-3 border-t border-line bg-surface/95 px-4 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] shadow-[0_-10px_24px_-14px_rgb(15_23_42/0.3)] backdrop-blur transition-[translate,visibility] duration-300 ease-out md:hidden",
+        "bottom-action-bar fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 gap-3 border-t border-line bg-surface px-4 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] shadow-[0_-10px_24px_-14px_rgb(15_23_42/0.3)] transition-[translate,visibility] duration-300 ease-out md:hidden",
         isMainButtonOnScreen ? "invisible translate-y-full" : "visible translate-y-0",
       )}
     >

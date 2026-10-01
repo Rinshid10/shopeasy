@@ -57,6 +57,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </h1>
           <p className="mt-1.5 max-w-2xl text-ink-muted">{category.description}</p>
         </header>
+        <h2 className="sr-only">Products in {category.name}</h2>
         {products.length > 0 ? (
           <SortableProductGrid products={products} />
         ) : (

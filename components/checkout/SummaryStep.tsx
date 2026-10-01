@@ -10,7 +10,6 @@ import { OrderLines } from "@/components/checkout/OrderLines";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CashIcon } from "@/components/ui/icons";
-import { createOrder } from "@/lib/checkout/pricing";
 import { placeOrder } from "@/lib/checkout/store";
 import { getOrderWhatsAppUrl } from "@/lib/checkout/whatsapp";
 import { useCartView } from "@/lib/checkout/use-cart-view";
@@ -29,6 +28,7 @@ export function SummaryStep({ products }: SummaryStepProps) {
   const router = useRouter();
   const view = useCartView(products);
   const [isPlacing, setIsPlacing] = useState(false);
+  const [placeError, setPlaceError] = useState<string | null>(null);
   const address = view?.checkout.address ?? null;
   const hasNoAddress = view !== null && view.lines.length > 0 && !address;
 
@@ -50,18 +50,25 @@ export function SummaryStep({ products }: SummaryStepProps) {
     return <CheckoutLoading />;
   }
 
-  const { lines } = view;
-  const deliveryAddress = address;
-
-  function placeTheOrder() {
+  async function placeTheOrder() {
     setIsPlacing(true);
-    const order = createOrder(lines, deliveryAddress);
-    placeOrder(order);
-    // Open WhatsApp with the order details ready to send to the delivery number. It has to
-    // happen inside this tap, or the browser blocks it as a pop-up. The confirmation screen
-    // has a button to try again.
-    window.open(getOrderWhatsAppUrl(order), "_blank", "noopener,noreferrer");
-    router.replace(routes.orderSuccess);
+    setPlaceError(null);
+    // Open the WhatsApp tab inside this tap, or the browser blocks it as a pop-up, then point
+    // it at the order once the database has placed it. The confirmation screen has a button
+    // to try again if it was blocked anyway.
+    const whatsAppTab = window.open("about:blank", "_blank");
+    try {
+      const order = await placeOrder();
+      if (whatsAppTab) {
+        whatsAppTab.opener = null;
+        whatsAppTab.location.href = getOrderWhatsAppUrl(order);
+      }
+      router.replace(routes.orderSuccess);
+    } catch (error) {
+      whatsAppTab?.close();
+      setPlaceError(error instanceof Error ? error.message : "Couldn't place the order.");
+      setIsPlacing(false);
+    }
   }
 
   return (
@@ -108,6 +115,11 @@ export function SummaryStep({ products }: SummaryStepProps) {
           Change
         </Link>
       </Card>
+      {placeError && (
+        <p role="alert" className="text-sm font-semibold text-negative">
+          {placeError}. Please try again.
+        </p>
+      )}
       {siteConfig.demoStore.isEnabled && (
         <p className="text-sm text-ink-muted">{siteConfig.demoStore.orderNote}</p>
       )}

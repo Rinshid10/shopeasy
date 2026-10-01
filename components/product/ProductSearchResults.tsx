@@ -44,7 +44,7 @@ function ResultsView({ products, query, maxPrice }: ResultsViewProps) {
           Search results
         </h2>
         {products.length > 0 ? (
-          <ProductGrid products={products} />
+          <ProductGrid products={products} eagerCount={4} />
         ) : (
           <Card className="flex flex-col items-start gap-3 p-6">
             <p className="text-ink">

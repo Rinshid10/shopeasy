@@ -1,7 +1,8 @@
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-export type ButtonVariant = "primary" | "brand" | "buy" | "outline" | "outline-brand" | "whatsapp";
+export type ButtonVariant =
+  "primary" | "brand" | "buy" | "outline" | "outline-brand" | "whatsapp" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonStyleOptions {
@@ -21,6 +22,8 @@ const variantClasses: Record<ButtonVariant, string> = {
   "outline-brand": "rounded-xl border border-brand bg-surface text-brand hover:bg-brand-soft",
   /** Green: sends something to WhatsApp. */
   whatsapp: "rounded-xl bg-positive text-surface hover:bg-positive/90",
+  /** Red: confirms something that can't be undone, such as cancelling an order. */
+  danger: "rounded-xl bg-negative text-surface hover:bg-negative/90",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

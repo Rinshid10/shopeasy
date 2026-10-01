@@ -17,13 +17,11 @@ export const siteConfig = {
     /** Shown as the delivery estimate: this many days after the order is placed. */
     deliveryDays: { min: 4, max: 7 },
   },
-  // The catalogue in data/ and the checkout are a demo: orders are kept only in the
-  // visitor's browser. While this is on, notes say so. Set isEnabled to false once real
-  // products and an order backend are connected.
+  // The catalogue in Supabase is sample data, so orders are saved but never delivered. While
+  // this is on, notes say so. Set isEnabled to false once the real catalogue is in.
   demoStore: {
     isEnabled: true,
     catalogueNote: "Demo store: the products, prices, ratings and discounts shown are samples.",
-    orderNote:
-      "Demo store: this order is saved only in this browser. No real order is placed or delivered.",
+    orderNote: "Demo store: this order is saved, but nothing is actually delivered.",
   },
 } as const;
