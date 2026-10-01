@@ -11,9 +11,14 @@ const CARD_IMAGE_SIZES = "(min-width: 1536px) 12vw, (min-width: 768px) 25vw, 50v
 
 interface ProductCardProps {
   product: Product;
+  /**
+   * Let the picture glide into the product page. Turn off for repeat appearances of a
+   * product on the same page: each picture name may appear only once per page.
+   */
+  morph?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, morph = true }: ProductCardProps) {
   return (
     <Card
       as="article"
@@ -27,7 +32,7 @@ export function ProductCard({ product }: ProductCardProps) {
           product={product}
           sizes={CARD_IMAGE_SIZES}
           shape="wide"
-          transitionName={getProductImageTransitionName(product.slug)}
+          transitionName={morph ? getProductImageTransitionName(product.slug) : undefined}
         />
         <h3 className="line-clamp-2 text-sm leading-snug font-medium text-ink transition-colors group-hover:text-brand">
           {product.title}

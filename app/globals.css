@@ -34,6 +34,15 @@
   --color-positive: #15803d;
   --color-positive-soft: #dcfce7;
 
+  /* Promo banner gradients and price-tile text. White text stays readable on each. */
+  --color-brand-light: #b02a93;
+  --color-teal: #0f766e;
+  --color-teal-light: #0e8a80;
+  --color-orange: #c2410c;
+  --color-orange-light: #d4520f;
+  --color-amber-ink: #8a5300;
+  --color-violet-ink: #5b21b6;
+
   /* Red for form errors. */
   --color-negative: #b91c1c;
 }

@@ -5,7 +5,13 @@ import { Suspense } from "react";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card } from "@/components/ui/Card";
-import { SEARCH_QUERY_PARAM, searchProducts } from "@/lib/product-search";
+import { formatPrice } from "@/lib/format";
+import {
+  parseMaxPrice,
+  SEARCH_MAX_PRICE_PARAM,
+  SEARCH_QUERY_PARAM,
+  searchProducts,
+} from "@/lib/product-search";
 import { routes } from "@/lib/routes";
 import type { Product } from "@/types";
 
@@ -15,20 +21,23 @@ interface ResultsProps {
 
 interface ResultsViewProps extends ResultsProps {
   query: string;
+  maxPrice?: number;
 }
 
-function describeResults(count: number, query: string): string {
+function describeResults(count: number, query: string, maxPrice?: number): string {
+  const found = `${count} ${count === 1 ? "product" : "products"}`;
+  const underPrice = maxPrice === undefined ? "" : ` under ${formatPrice(maxPrice)}`;
   if (query === "") {
-    return `Showing all ${count} products.`;
+    return maxPrice === undefined ? `Showing all ${found}.` : `${found}${underPrice}.`;
   }
-  return `${count} ${count === 1 ? "product matches" : "products match"} “${query}”.`;
+  return `${found}${underPrice} ${count === 1 ? "matches" : "match"} “${query}”.`;
 }
 
-function ResultsView({ products, query }: ResultsViewProps) {
+function ResultsView({ products, query, maxPrice }: ResultsViewProps) {
   return (
     <div className="flex flex-col gap-4">
       <p aria-live="polite" className="text-sm font-medium text-ink-muted">
-        {describeResults(products.length, query)}
+        {describeResults(products.length, query, maxPrice)}
       </p>
       <section aria-labelledby="search-results-heading">
         <h2 id="search-results-heading" className="sr-only">
@@ -50,8 +59,16 @@ function ResultsView({ products, query }: ResultsViewProps) {
 }
 
 function FilteredResults({ products }: ResultsProps) {
-  const query = (useSearchParams().get(SEARCH_QUERY_PARAM) ?? "").trim();
-  return <ResultsView products={searchProducts(products, query)} query={query} />;
+  const searchParams = useSearchParams();
+  const query = (searchParams.get(SEARCH_QUERY_PARAM) ?? "").trim();
+  const maxPrice = parseMaxPrice(searchParams.get(SEARCH_MAX_PRICE_PARAM));
+  return (
+    <ResultsView
+      products={searchProducts(products, query, maxPrice)}
+      query={query}
+      maxPrice={maxPrice}
+    />
+  );
 }
 
 /** Filters products in the browser using the query in the URL, so the page itself stays static. */
