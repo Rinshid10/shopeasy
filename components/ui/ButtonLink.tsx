@@ -6,13 +6,14 @@ interface ButtonLinkProps {
   href: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
+  fullWidth?: boolean;
   children: ReactNode;
 }
 
-/** An internal link styled as a button. For Flipkart links, use AffiliateButton instead. */
-export function ButtonLink({ href, variant, size, children }: ButtonLinkProps) {
+/** An internal link styled as a button. */
+export function ButtonLink({ href, variant, size, fullWidth, children }: ButtonLinkProps) {
   return (
-    <Link href={href} className={buttonClasses({ variant, size })}>
+    <Link href={href} className={buttonClasses({ variant, size, fullWidth })}>
       {children}
     </Link>
   );

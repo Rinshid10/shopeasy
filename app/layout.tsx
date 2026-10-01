@@ -19,9 +19,6 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
-  other: {
-    "cuelinks-verification": siteConfig.cuelinksVerification,
-  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

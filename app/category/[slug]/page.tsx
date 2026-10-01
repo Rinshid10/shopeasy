@@ -9,6 +9,7 @@ import { getCategories, getCategoryBySlug } from "@/lib/categories";
 import { getProductsByCategory } from "@/lib/products";
 import { routes } from "@/lib/routes";
 import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
+import { siteConfig } from "@/lib/site-config";
 import type { BreadcrumbItem } from "@/types";
 
 type CategoryPageProps = PageProps<"/category/[slug]">;
@@ -26,8 +27,8 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   }
 
   return buildPageMetadata({
-    title: `Best ${category.name} on Flipkart`,
-    description: `${category.description} Compare our handpicked picks and check the latest price on Flipkart.`,
+    title: `${category.name}: Shop Online at Low Prices`,
+    description: `${category.description} Free delivery and cash on delivery on ${siteConfig.name}.`,
     path: routes.category(category.slug),
   });
 }

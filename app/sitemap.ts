@@ -10,9 +10,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: absoluteUrl(routes.home) },
     ...categories.map((category) => ({ url: absoluteUrl(routes.category(category.slug)) })),
-    ...products.map((product) => ({
-      url: absoluteUrl(routes.product(product.slug)),
-      lastModified: product.priceCheckedOn,
-    })),
+    ...products.map((product) => ({ url: absoluteUrl(routes.product(product.slug)) })),
   ];
 }

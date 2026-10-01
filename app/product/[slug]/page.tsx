@@ -15,6 +15,7 @@ import { getCategoryBySlug } from "@/lib/categories";
 import { getProductBySlug, getProducts, getRelatedProducts } from "@/lib/products";
 import { routes } from "@/lib/routes";
 import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
+import { siteConfig } from "@/lib/site-config";
 import type { BreadcrumbItem } from "@/types";
 
 const MAIN_IMAGE_SIZES = "(min-width: 768px) 40vw, 100vw";
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
   return buildPageMetadata({
     title: product.title,
-    description: `${product.shortDescription} See the pros and cons, and check the latest price on Flipkart.`,
+    description: `${product.shortDescription} Free delivery and cash on delivery on ${siteConfig.name}.`,
     path: routes.product(product.slug),
     image: product.imageUrl ? { url: product.imageUrl, alt: product.title } : undefined,
   });

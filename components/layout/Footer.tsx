@@ -35,8 +35,17 @@ export async function Footer() {
             </ul>
           </nav>
           <div className="rounded-2xl border border-ink-line bg-ink-raised p-4 md:col-span-2 md:self-start">
-            <h2 className="text-sm font-semibold text-surface">Affiliate disclosure</h2>
-            <p className="mt-2 text-sm">{siteConfig.affiliate.disclosure}</p>
+            <h2 className="text-sm font-semibold text-surface">Shop with confidence</h2>
+            <p className="mt-2 text-sm">
+              Free delivery and cash on delivery on every order. Questions? Write to{" "}
+              <a
+                href={`mailto:${siteConfig.contactEmail}`}
+                className="underline hover:text-surface"
+              >
+                {siteConfig.contactEmail}
+              </a>
+              .
+            </p>
           </div>
         </div>
         <p className="border-t border-ink-line pt-6 text-xs">

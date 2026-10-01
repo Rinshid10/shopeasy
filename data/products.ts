@@ -1,12 +1,10 @@
 import type { Product } from "@/types";
 
 // DEMO CATALOGUE. Every product, price, MRP, rating and picture below is sample data for
-// building the design. Replace all of it with real Flipkart listings before promoting the
-// site, then turn off the demo note in lib/site-config.ts.
-// Search this file for "TODO: replace with affiliate link" to find every placeholder link.
+// building the design. Replace it with your real catalogue, then turn off the demo notes
+// in lib/site-config.ts.
 
 const DEMO_BRAND = "Demo brand";
-const DEMO_PRICE_DATE = "2026-09-30";
 
 export const products: Product[] = [
   {
@@ -21,9 +19,7 @@ export const products: Product[] = [
     mrp: 2499,
     rating: 4.3,
     ratingCount: 12400,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: "/images/demo/products/mens-casual-sneakers.png",
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Comfortable cushioned sole", "Goes with most outfits", "Easy to clean"],
     cons: ["White shows dirt quickly", "Runs slightly narrow"],
     isTopPick: true,
@@ -40,9 +36,7 @@ export const products: Product[] = [
     mrp: 3999,
     rating: 4.4,
     ratingCount: 8900,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: "/images/demo/products/wireless-earbuds.png",
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Compact charging case", "Quick pairing", "Clear call quality"],
     cons: ["No active noise cancellation", "Touch controls take practice"],
     isTopPick: true,
@@ -59,9 +53,7 @@ export const products: Product[] = [
     mrp: 2999,
     rating: 4.2,
     ratingCount: 6100,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: "/images/demo/products/womens-handbag.png",
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Roomy main compartment", "Sturdy handles", "Works for office and outings"],
     cons: ["No shoulder strap", "Light colour needs care"],
     isTopPick: true,
@@ -78,9 +70,7 @@ export const products: Product[] = [
     mrp: 7999,
     rating: 4.5,
     ratingCount: 15200,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: "/images/demo/products/smart-watch.png",
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Bright, easy-to-read display", "Multi-day battery", "Call and message alerts"],
     cons: ["Limited third-party apps", "Proprietary charging cable"],
     isTopPick: true,
@@ -97,9 +87,7 @@ export const products: Product[] = [
     mrp: 1299,
     rating: 4.1,
     ratingCount: 9800,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: "/images/demo/products/mens-t-shirt.png",
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Soft, breathable cotton", "Regular fit", "Holds colour after washing"],
     cons: ["May shrink slightly on first wash", "Plain design"],
     isTopPick: true,
@@ -116,9 +104,7 @@ export const products: Product[] = [
     mrp: 4999,
     rating: 4.3,
     ratingCount: 4700,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: "/images/demo/products/non-stick-cookware-set.png",
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Needs less oil", "Easy to clean", "Covers everyday cooking"],
     cons: ["Not for metal spatulas", "Coating wears with rough use"],
     isTopPick: true,
@@ -135,9 +121,7 @@ export const products: Product[] = [
     mrp: 4499,
     rating: 4.2,
     ratingCount: 7300,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: "/images/demo/products/running-shoes.png",
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Breathable mesh upper", "Cushioned midsole", "Good grip"],
     cons: ["Not waterproof", "Order half a size up"],
     isTopPick: true,
@@ -154,9 +138,7 @@ export const products: Product[] = [
     mrp: 2499,
     rating: 4.2,
     ratingCount: 5600,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: "/images/demo/products/backpack.png",
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Padded laptop sleeve", "Comfortable straps", "Plenty of pockets"],
     cons: ["No rain cover included", "Bulky when full"],
     isTopPick: true,
@@ -173,9 +155,7 @@ export const products: Product[] = [
     mrp: 18999,
     rating: 4.3,
     ratingCount: 21500,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: null,
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["All-day battery", "Smooth large display", "Fast charging"],
     cons: ["Average low-light camera", "Plastic back"],
     isTopPick: false,
@@ -192,9 +172,7 @@ export const products: Product[] = [
     mrp: 15999,
     rating: 4.1,
     ratingCount: 3200,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: null,
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Large screen", "Dual speakers", "Long battery life"],
     cons: ["Not built for heavy gaming", "Charges slowly"],
     isTopPick: false,
@@ -211,9 +189,7 @@ export const products: Product[] = [
     mrp: 699,
     rating: 4.2,
     ratingCount: 5400,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: null,
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Absorbs quickly", "Non-sticky", "Layers well under sunscreen"],
     cons: ["Small bottle", "Patch test needed for sensitive skin"],
     isTopPick: false,
@@ -230,9 +206,7 @@ export const products: Product[] = [
     mrp: 1499,
     rating: 4.0,
     ratingCount: 2800,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: null,
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Foldable and light", "Two heat settings", "Dries quickly"],
     cons: ["A little noisy", "Short power cord"],
     isTopPick: false,
@@ -249,9 +223,7 @@ export const products: Product[] = [
     mrp: 1499,
     rating: 4.1,
     ratingCount: 1900,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: null,
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Rechargeable battery", "Simple controls", "Sturdy build"],
     cons: ["Short play time per charge", "Not for rough ground"],
     isTopPick: false,
@@ -268,9 +240,7 @@ export const products: Product[] = [
     mrp: 999,
     rating: 4.4,
     ratingCount: 3600,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: null,
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Encourages creative play", "Storage box included", "Smooth, rounded edges"],
     cons: ["Small parts, not for toddlers", "Box lid is loose"],
     isTopPick: false,
@@ -287,9 +257,7 @@ export const products: Product[] = [
     mrp: 9999,
     rating: 4.2,
     ratingCount: 2300,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: null,
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Lumbar support", "Breathable mesh back", "Adjustable height and tilt"],
     cons: ["Needs assembly", "Armrests are fixed"],
     isTopPick: false,
@@ -306,9 +274,7 @@ export const products: Product[] = [
     mrp: 6999,
     rating: 4.0,
     ratingCount: 1100,
-    priceCheckedOn: DEMO_PRICE_DATE,
     imageUrl: null,
-    affiliateUrl: "https://www.flipkart.com/", // TODO: replace with affiliate link
     pros: ["Fits small rooms", "Storage shelf", "Sturdy once assembled"],
     cons: ["Needs assembly", "Surface scratches easily"],
     isTopPick: false,

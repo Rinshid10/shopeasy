@@ -136,3 +136,101 @@ export function ShoppingBagIcon(props: IconProps) {
     </IconBase>
   );
 }
+
+export function CartIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2" />
+      <circle cx="9.5" cy="19.5" r="1.25" />
+      <circle cx="17" cy="19.5" r="1.25" />
+    </IconBase>
+  );
+}
+
+export function PlusIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M12 5v14M5 12h14" />
+    </IconBase>
+  );
+}
+
+export function MinusIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M5 12h14" />
+    </IconBase>
+  );
+}
+
+export function TrashIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+    </IconBase>
+  );
+}
+
+export function MapPinIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M12 21s7-6.2 7-11.5a7 7 0 1 0-14 0C5 14.8 12 21 12 21Z" />
+      <circle cx="12" cy="9.5" r="2.5" />
+    </IconBase>
+  );
+}
+
+export function CrosshairIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="12" cy="12" r="7" />
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+    </IconBase>
+  );
+}
+
+export function CashIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="2.5" y="6" width="19" height="12" rx="2" />
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M6 9.5v5M18 9.5v5" />
+    </IconBase>
+  );
+}
+
+export function PencilIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="m4 20 1-4L16 5l3 3L8 19l-4 1ZM14 7l3 3" />
+    </IconBase>
+  );
+}
+
+export function LockIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </IconBase>
+  );
+}
+
+export function ChatIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M4 20l1.3-3.9A8 8 0 1 1 8 19l-4 1Z" />
+      <path d="M9 10h6M9 13.5h4" />
+    </IconBase>
+  );
+}
+
+export function PackageIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" />
+      <path d="m4 7.5 8 4.5 8-4.5M12 12v9M8 5.25l8 4.5" />
+    </IconBase>
+  );
+}

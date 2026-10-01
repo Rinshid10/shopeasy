@@ -1,21 +1,22 @@
-import { AffiliateButton } from "@/components/product/AffiliateButton";
+import { AddToCartButton } from "@/components/product/AddToCartButton";
+import { BuyNowButton } from "@/components/product/BuyNowButton";
 import { ProductPrice } from "@/components/product/ProductPrice";
 import { ProductRating } from "@/components/product/ProductRating";
 import { Badge } from "@/components/ui/Badge";
-import { formatDate } from "@/lib/format";
+import { CashIcon, TruckIcon } from "@/components/ui/icons";
 import { siteConfig } from "@/lib/site-config";
 import type { Product } from "@/types";
 
-/** The id of the page's main buy button, watched by the sticky buy bar on phones. */
+/** The id of the page's main buy buttons, watched by the sticky buy bar on phones. */
 export const PRODUCT_MAIN_BUY_BUTTON_ID = "main-buy-button";
 
 interface ProductSummaryProps {
   product: Product;
 }
 
-/** The title, price and buy button shown beside the main image on a product page. */
+/** The title, price and buy buttons shown beside the main image on a product page. */
 export function ProductSummary({ product }: ProductSummaryProps) {
-  const { affiliate, demoCatalogue } = siteConfig;
+  const { demoStore, store } = siteConfig;
 
   return (
     <div className="flex flex-col gap-5">
@@ -32,17 +33,25 @@ export function ProductSummary({ product }: ProductSummaryProps) {
         )}
         <p className="text-ink-muted sm:text-lg">{product.shortDescription}</p>
       </div>
-      <div>
+      <div className="flex flex-col gap-3">
         <ProductPrice price={product.price} mrp={product.mrp} size="lg" />
-        <p className="mt-1 text-sm text-ink-muted">
-          {affiliate.priceNote} Last checked on {formatDate(product.priceCheckedOn)}.
-        </p>
-        {demoCatalogue.isEnabled && (
-          <p className="mt-1 text-sm text-ink-muted">{demoCatalogue.note}</p>
-        )}
+        <ul className="flex flex-wrap gap-2 text-sm font-medium text-ink">
+          {store.deliveryCharge === 0 && (
+            <li className="flex items-center gap-1.5 rounded-full bg-surface-muted px-3 py-1.5">
+              <TruckIcon className="size-4 text-brand" />
+              Free Delivery
+            </li>
+          )}
+          <li className="flex items-center gap-1.5 rounded-full bg-surface-muted px-3 py-1.5">
+            <CashIcon className="size-4 text-brand" />
+            Cash on Delivery
+          </li>
+        </ul>
+        {demoStore.isEnabled && <p className="text-sm text-ink-muted">{demoStore.catalogueNote}</p>}
       </div>
-      <div id={PRODUCT_MAIN_BUY_BUTTON_ID} className="sm:max-w-sm">
-        <AffiliateButton href={product.affiliateUrl} productTitle={product.title} size="lg" />
+      <div id={PRODUCT_MAIN_BUY_BUTTON_ID} className="grid grid-cols-2 gap-3 sm:max-w-md">
+        <AddToCartButton productSlug={product.slug} productTitle={product.title} size="lg" />
+        <BuyNowButton productSlug={product.slug} productTitle={product.title} size="lg" />
       </div>
     </div>
   );

@@ -2,12 +2,12 @@
 
 /* The site's colour palette. Every colour used in components comes from these tokens. */
 @theme {
-  /* Blue for highlights, links and the main call to action. */
-  --color-brand: #2563eb;
-  --color-brand-strong: #1d4ed8;
-  --color-brand-soft: #eff6ff;
+  /* Purple for highlights, links and buy buttons. */
+  --color-brand: #9c1d87;
+  --color-brand-strong: #7a1569;
+  --color-brand-soft: #fdf0fa;
 
-  /* Navy for text, buy buttons and the footer. */
+  /* Navy for text and the footer. */
   --color-ink: #0f172a;
   --color-ink-muted: #475569;
   /* For use on navy backgrounds: muted text, raised panels and borders. */
@@ -33,6 +33,9 @@
   /* Green for ratings and discount badges. */
   --color-positive: #15803d;
   --color-positive-soft: #dcfce7;
+
+  /* Red for form errors. */
+  --color-negative: #b91c1c;
 }
 
 @theme inline {
@@ -72,9 +75,9 @@
     outline-offset: 2px;
   }
 
-  /* On phones the product page has a buy bar fixed to the bottom: keep other things clear of it. */
+  /* On phones, pages with an action bar fixed to the bottom keep other things clear of it. */
   @media (width < 48rem) {
-    :root:has(.sticky-buy-bar) {
+    :root:has(.bottom-action-bar) {
       --bottom-bar-height: 4.75rem;
     }
   }

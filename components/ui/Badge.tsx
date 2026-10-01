@@ -10,7 +10,7 @@ interface BadgeProps {
 
 const variantClasses: Record<BadgeVariant, string> = {
   neutral: "bg-surface-muted text-ink",
-  highlight: "bg-tint-blue text-brand-strong",
+  highlight: "bg-brand-soft text-brand-strong",
 };
 
 export function Badge({ variant = "neutral", children }: BadgeProps) {

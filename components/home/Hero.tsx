@@ -30,11 +30,11 @@ export function Hero({ topPicksId }: HeroProps) {
               <span className="block text-brand">All in One Place</span>
             </h1>
             <p className="max-w-sm enter-up text-base text-ink-muted [--enter-delay:160ms] sm:text-lg">
-              Top brands, great value and hassle-free shopping, handpicked from Flipkart.
+              Low prices, free delivery and cash on delivery on fashion, home, beauty and more.
             </p>
             <div className="enter-up [--enter-delay:240ms]">
               <ButtonLink href={`#${topPicksId}`} variant="brand" size="lg">
-                Explore Now
+                Shop Now
                 <ArrowRightIcon className="size-5" />
               </ButtonLink>
             </div>

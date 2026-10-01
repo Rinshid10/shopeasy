@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AffiliateButton } from "@/components/product/AffiliateButton";
+import { BuyNowButton } from "@/components/product/BuyNowButton";
 import { getProductImageTransitionName, ProductImage } from "@/components/product/ProductImage";
 import { ProductPrice } from "@/components/product/ProductPrice";
 import { ProductRating } from "@/components/product/ProductRating";
@@ -38,12 +38,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <ProductRating rating={product.rating} count={product.ratingCount} />
         )}
         <ProductPrice price={product.price} mrp={product.mrp} />
-        <AffiliateButton
-          href={product.affiliateUrl}
-          productTitle={product.title}
-          size="sm"
-          compact
-        />
+        <BuyNowButton productSlug={product.slug} productTitle={product.title} size="sm" compact />
       </div>
     </Card>
   );

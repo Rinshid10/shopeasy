@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { CubeIcon, ShieldCheckIcon, TagIcon, TruckIcon } from "@/components/ui/icons";
+import { CashIcon, CubeIcon, TagIcon, TruckIcon } from "@/components/ui/icons";
 
 interface TrustPoint {
   title: string;
@@ -14,18 +14,18 @@ const TRUST_POINTS: TrustPoint[] = [
     icon: <CubeIcon className="size-6" />,
   },
   {
-    title: "Great Value Picks",
-    text: "More value for your money",
+    title: "Low Prices",
+    text: "Great value on every order",
     icon: <TagIcon className="size-6" />,
   },
   {
-    title: "Secure Checkout",
-    text: "You pay on Flipkart, never here",
-    icon: <ShieldCheckIcon className="size-6" />,
+    title: "Cash on Delivery",
+    text: "Pay when your order arrives",
+    icon: <CashIcon className="size-6" />,
   },
   {
-    title: "Delivered by Flipkart",
-    text: "Shipping and returns handled by Flipkart",
+    title: "Free Delivery",
+    text: "No delivery charge on any order",
     icon: <TruckIcon className="size-6" />,
   },
 ];

@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { CartLink } from "@/components/layout/CartLink";
 import { Logo } from "@/components/layout/Logo";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { SearchForm } from "@/components/product/SearchForm";
 import { Container } from "@/components/ui/Container";
-import { ChevronRightIcon, MenuIcon, SearchIcon } from "@/components/ui/icons";
+import { ChevronRightIcon, MenuIcon, PackageIcon, SearchIcon } from "@/components/ui/icons";
 import { getCategories } from "@/lib/categories";
 import { routes } from "@/lib/routes";
 import type { NavLink } from "@/types";
@@ -25,7 +26,7 @@ export async function Header() {
         <div className="hidden max-w-4xl flex-1 md:block">
           <SearchForm />
         </div>
-        <div className="ml-auto flex items-center gap-1 lg:hidden">
+        <div className="ml-auto flex items-center gap-1">
           <Link
             href={routes.search}
             aria-label="Search products"
@@ -33,7 +34,18 @@ export async function Header() {
           >
             <SearchIcon className="size-6" />
           </Link>
-          <MobileNav links={categoryLinks} />
+          <Link
+            href={routes.orders}
+            aria-label="My Orders"
+            title="My Orders"
+            className="flex size-10 pressable items-center justify-center rounded-lg text-ink hover:bg-surface-muted md:size-11"
+          >
+            <PackageIcon className="size-6" />
+          </Link>
+          <CartLink />
+          <div className="lg:hidden">
+            <MobileNav links={[{ label: "My Orders", href: routes.orders }, ...categoryLinks]} />
+          </div>
         </div>
       </Container>
       <nav aria-label="Categories" className="hidden border-t border-line lg:block">

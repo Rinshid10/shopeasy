@@ -7,12 +7,12 @@ interface ProductGridProps {
 }
 
 /**
- * A grid of product cards, followed by one shared note about prices and affiliate links.
+ * A grid of product cards, followed by the demo-store note while it is turned on.
  * The column count follows the width of the space the grid is placed in (2, 4 or 8),
  * so it works in both wide and narrow page layouts.
  */
 export function ProductGrid({ products }: ProductGridProps) {
-  const { affiliate, demoCatalogue } = siteConfig;
+  const { demoStore } = siteConfig;
 
   return (
     <div className="@container flex flex-col gap-3">
@@ -23,10 +23,7 @@ export function ProductGrid({ products }: ProductGridProps) {
           </li>
         ))}
       </ul>
-      <p className="text-xs text-ink-muted">
-        {demoCatalogue.isEnabled && `${demoCatalogue.note} `}
-        {affiliate.priceNote} {affiliate.buttonsNote}
-      </p>
+      {demoStore.isEnabled && <p className="text-xs text-ink-muted">{demoStore.catalogueNote}</p>}
     </div>
   );
 }
