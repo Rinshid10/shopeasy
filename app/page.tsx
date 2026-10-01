@@ -3,6 +3,7 @@ import { Hero } from "@/components/home/Hero";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
+import { PageTransition } from "@/components/ui/PageTransition";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getCategories } from "@/lib/categories";
 import { getTopPicks } from "@/lib/products";
@@ -26,7 +27,7 @@ export default async function HomePage() {
   const [categories, topPicks] = await Promise.all([getCategories(), getTopPicks()]);
 
   return (
-    <>
+    <PageTransition>
       <JsonLd data={organizationJsonLd()} />
       <JsonLd data={websiteJsonLd()} />
       <Hero topPicksId={TOP_PICKS_ID} />
@@ -34,7 +35,7 @@ export default async function HomePage() {
         <section
           id={CATEGORIES_ID}
           aria-labelledby="categories-heading"
-          className={SECTION_SCROLL_MARGIN}
+          className={`reveal ${SECTION_SCROLL_MARGIN}`}
         >
           <SectionHeading
             id="categories-heading"
@@ -56,6 +57,6 @@ export default async function HomePage() {
           <ProductGrid products={topPicks} />
         </section>
       </Container>
-    </>
+    </PageTransition>
   );
 }

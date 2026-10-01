@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { AffiliateButton } from "@/components/product/AffiliateButton";
-import { ProductImage } from "@/components/product/ProductImage";
+import { getProductImageTransitionName, ProductImage } from "@/components/product/ProductImage";
 import { ProductPrice } from "@/components/product/ProductPrice";
 import { ProductRating } from "@/components/product/ProductRating";
 import { Card } from "@/components/ui/Card";
@@ -17,11 +17,19 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card
       as="article"
-      className="flex h-full flex-col p-2.5 transition-shadow duration-200 hover:shadow-lg sm:p-3"
+      className="flex h-full reveal flex-col p-2.5 transition-[box-shadow,translate,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-brand/30 hover:shadow-xl hover:shadow-ink/10 sm:p-3"
     >
-      <Link href={routes.product(product.slug)} className="group flex flex-col gap-2 rounded-xl">
-        <ProductImage product={product} sizes={CARD_IMAGE_SIZES} shape="wide" />
-        <h3 className="line-clamp-2 text-sm leading-snug font-medium text-ink group-hover:underline">
+      <Link
+        href={routes.product(product.slug)}
+        className="group flex pressable flex-col gap-2 rounded-xl"
+      >
+        <ProductImage
+          product={product}
+          sizes={CARD_IMAGE_SIZES}
+          shape="wide"
+          transitionName={getProductImageTransitionName(product.slug)}
+        />
+        <h3 className="line-clamp-2 text-sm leading-snug font-medium text-ink transition-colors group-hover:text-brand">
           {product.title}
         </h3>
       </Link>

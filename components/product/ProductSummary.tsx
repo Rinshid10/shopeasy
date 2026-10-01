@@ -6,6 +6,9 @@ import { formatDate } from "@/lib/format";
 import { siteConfig } from "@/lib/site-config";
 import type { Product } from "@/types";
 
+/** The id of the page's main buy button, watched by the sticky buy bar on phones. */
+export const PRODUCT_MAIN_BUY_BUTTON_ID = "main-buy-button";
+
 interface ProductSummaryProps {
   product: Product;
 }
@@ -38,7 +41,7 @@ export function ProductSummary({ product }: ProductSummaryProps) {
           <p className="mt-1 text-sm text-ink-muted">{demoCatalogue.note}</p>
         )}
       </div>
-      <div className="sm:max-w-sm">
+      <div id={PRODUCT_MAIN_BUY_BUTTON_ID} className="sm:max-w-sm">
         <AffiliateButton href={product.affiliateUrl} productTitle={product.title} size="lg" />
       </div>
     </div>

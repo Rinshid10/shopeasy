@@ -29,7 +29,7 @@ export function CategoryTiles({ categories }: CategoryTilesProps) {
           <Link
             href={routes.category(category.slug)}
             className={cn(
-              "group flex h-full flex-col gap-1 rounded-2xl p-1.5 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg sm:gap-2 sm:p-3",
+              "group flex h-full pressable flex-col gap-1 rounded-2xl p-1.5 hover:-translate-y-1 hover:shadow-lg sm:gap-2 sm:p-3",
               tintClasses[category.tint],
             )}
           >
@@ -46,7 +46,7 @@ export function CategoryTiles({ categories }: CategoryTilesProps) {
               <span className="text-[11px] leading-tight font-semibold text-ink max-sm:w-full max-sm:text-center sm:text-sm">
                 {category.name}
               </span>
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-surface text-ink shadow-sm max-sm:hidden">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-surface text-ink shadow-sm transition-transform duration-300 group-hover:translate-x-0.5 max-sm:hidden">
                 <ChevronRightIcon className="size-4" />
               </span>
             </span>

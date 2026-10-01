@@ -31,7 +31,7 @@ export function buttonClasses({
   className,
 }: ButtonStyleOptions = {}): string {
   return cn(
-    "inline-flex items-center justify-center gap-2 text-center leading-tight font-semibold transition-colors",
+    "pressable inline-flex items-center justify-center gap-2 text-center leading-tight font-semibold",
     "disabled:cursor-not-allowed disabled:opacity-60",
     variantClasses[variant],
     sizeClasses[size],

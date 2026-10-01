@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
-import { CloseIcon, MenuIcon } from "@/components/ui/icons";
+import { ChevronRightIcon, CloseIcon, MenuIcon } from "@/components/ui/icons";
+import { cn } from "@/lib/cn";
 import type { NavLink } from "@/types";
 
 interface MobileNavProps {
   links: NavLink[];
 }
 
+/** The hamburger menu: a panel that slides down under the header over a dimmed page. */
 export function MobileNav({ links }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -26,8 +28,15 @@ export function MobileNav({ links }: MobileNavProps) {
       }
     }
 
+    // Stop the page behind the menu from scrolling while it is open.
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", closeOnEscape);
+    };
   }, [isOpen]);
 
   return (
@@ -39,25 +48,36 @@ export function MobileNav({ links }: MobileNavProps) {
         aria-controls={panelId}
         aria-label={isOpen ? "Close menu" : "Open menu"}
         onClick={() => setIsOpen((open) => !open)}
-        className="flex size-10 items-center justify-center rounded-lg text-ink transition-colors hover:bg-surface-muted"
+        className="flex size-10 pressable items-center justify-center rounded-lg text-ink hover:bg-surface-muted"
       >
         {isOpen ? <CloseIcon className="size-6" /> : <MenuIcon className="size-6" />}
       </button>
+      <div
+        aria-hidden="true"
+        onClick={() => setIsOpen(false)}
+        className={cn(
+          "fixed inset-x-0 top-14 bottom-0 bg-ink/40 transition-[opacity,visibility] duration-200 md:top-[4.5rem]",
+          isOpen ? "visible opacity-100" : "invisible opacity-0",
+        )}
+      />
       <nav
         id={panelId}
         aria-label="Mobile"
-        hidden={!isOpen}
-        className="absolute inset-x-0 top-full border-t border-line bg-surface shadow-xl"
+        className={cn(
+          "absolute inset-x-0 top-full max-h-[calc(100dvh-3.5rem)] overflow-y-auto rounded-b-3xl border-t border-line bg-surface shadow-xl transition-[opacity,translate,visibility] duration-200 ease-out",
+          isOpen ? "visible translate-y-0 opacity-100" : "invisible -translate-y-3 opacity-0",
+        )}
       >
-        <ul className="mx-auto max-w-6xl px-4 py-2 sm:px-6">
+        <ul className="px-4 py-2 sm:px-6">
           {links.map((link) => (
-            <li key={link.href}>
+            <li key={link.href} className="border-b border-line last:border-b-0">
               <Link
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="block rounded-lg px-2 py-3 font-medium text-ink transition-colors hover:bg-surface-muted hover:text-brand"
+                className="flex pressable items-center justify-between gap-3 rounded-lg px-2 py-3.5 font-medium text-ink hover:text-brand"
               >
                 {link.label}
+                <ChevronRightIcon className="size-4 text-ink-muted" />
               </Link>
             </li>
           ))}

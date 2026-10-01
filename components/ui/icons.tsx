@@ -74,6 +74,14 @@ export function ArrowRightIcon(props: IconProps) {
   );
 }
 
+export function ArrowUpIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M12 19V5M6 11l6-6 6 6" />
+    </IconBase>
+  );
+}
+
 export function CubeIcon(props: IconProps) {
   return (
     <IconBase {...props}>

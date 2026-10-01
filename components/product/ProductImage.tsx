@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ViewTransition } from "react";
 import { cn } from "@/lib/cn";
 import { PLACEHOLDER_IMAGE } from "@/lib/placeholder";
 import type { Product } from "@/types";
@@ -13,6 +14,16 @@ interface ProductImageProps {
   shape?: ProductImageShape;
   /** Set on the main image of a page so the browser fetches it early. */
   preload?: boolean;
+  /**
+   * Pictures with the same name on two pages glide from one position to the other during
+   * navigation. Use getProductImageTransitionName so the card and product page match.
+   */
+  transitionName?: string;
+}
+
+/** The shared name that lets a product's picture glide between its card and its page. */
+export function getProductImageTransitionName(slug: string): string {
+  return `product-image-${slug}`;
 }
 
 const frameClasses: Record<ProductImageShape, string> = {
@@ -29,10 +40,11 @@ export function ProductImage({
   sizes,
   shape = "square",
   preload = false,
+  transitionName,
 }: ProductImageProps) {
   const hasImage = product.imageUrl !== null;
 
-  return (
+  const frame = (
     <div
       className={cn(
         "relative overflow-hidden rounded-xl",
@@ -52,5 +64,15 @@ export function ProductImage({
         )}
       />
     </div>
+  );
+
+  if (!transitionName) {
+    return frame;
+  }
+
+  return (
+    <ViewTransition name={transitionName} share="morph" default="none">
+      {frame}
+    </ViewTransition>
   );
 }
