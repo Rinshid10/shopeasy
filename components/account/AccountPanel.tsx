@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { CheckoutLoading } from "@/components/checkout/CheckoutStatus";
 import { FormField, TextInput } from "@/components/checkout/FormField";
 import { Button } from "@/components/ui/Button";
@@ -9,32 +9,46 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
 import { UserIcon } from "@/components/ui/icons";
-import { hasAccount, logIn, register, signOut } from "@/lib/auth/customer-auth";
+import {
+  formatMobile,
+  hasAccount,
+  sendLoginCode,
+  signOut,
+  verifyLoginCode,
+} from "@/lib/auth/customer-auth";
 import { useAuthUser } from "@/lib/auth/use-auth-user";
-import { cn } from "@/lib/cn";
+import { PHONE_PATTERN } from "@/lib/checkout/address";
 import { routes } from "@/lib/routes";
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MIN_PASSWORD_LENGTH = 6;
+const CODE_PATTERN = /^\d{6}$/;
+/** Seconds before another code can be sent. */
+const RESEND_WAIT = 30;
 
-type Mode = "log-in" | "register";
+function digitsOnly(value: string, maxLength: number): string {
+  return value.replace(/\D/g, "").slice(0, maxLength);
+}
 
 interface AccountPanelProps {
   /** Where to go after logging in, e.g. back to checkout. */
   returnTo?: string;
 }
 
-/** Log in or register (needed to buy), or see who is logged in. */
+/** Log in with mobile number and SMS code (needed to buy), or see who is logged in. */
 export function AccountPanel({ returnTo }: AccountPanelProps) {
   const router = useRouter();
   const { isLoaded, user } = useAuthUser();
-  const [mode, setMode] = useState<Mode>("log-in");
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [code, setCode] = useState("");
+  const [step, setStep] = useState<"mobile" | "code">("mobile");
+  const [resendIn, setResendIn] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState<string | undefined>();
-  const [notice, setNotice] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const timer = setTimeout(() => setResendIn((seconds) => seconds - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [resendIn]);
 
   if (!isLoaded) {
     return <CheckoutLoading />;
@@ -46,7 +60,7 @@ export function AccountPanel({ returnTo }: AccountPanelProps) {
         <AccountHeading title="My Account" />
         <Card className="flex flex-col gap-4 p-4 sm:p-6">
           <p className="text-ink-muted">
-            Logged in as <span className="font-semibold text-ink">{user?.email}</span>
+            Logged in as <span className="font-semibold text-ink">{formatMobile(user?.phone)}</span>
           </p>
           <ButtonLink href={returnTo ?? routes.orders} variant="buy" size="lg">
             {returnTo ? "Continue to Checkout" : "My Orders"}
@@ -71,42 +85,43 @@ export function AccountPanel({ returnTo }: AccountPanelProps) {
     );
   }
 
-  function switchMode(next: Mode) {
-    setMode(next);
-    setError(undefined);
-    setNotice(undefined);
-  }
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const cleanEmail = email.trim().toLowerCase();
-    if (mode === "register" && fullName.trim().length < 2) {
-      return setError("Enter your name.");
-    }
-    if (!EMAIL_PATTERN.test(cleanEmail)) {
-      return setError("Enter a valid email address.");
-    }
-    if (password.length < MIN_PASSWORD_LENGTH) {
-      return setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`);
-    }
-
+  async function sendCode() {
     setIsBusy(true);
     setError(undefined);
-    setNotice(undefined);
     try {
-      if (mode === "log-in") {
-        await logIn(cleanEmail, password);
-      } else if ((await register(fullName.trim(), cleanEmail, password)) === "confirm-email") {
-        setNotice(
-          `We sent a confirmation link to ${cleanEmail}. Open it, then log in here to continue.`,
-        );
-        setMode("log-in");
-        setIsBusy(false);
-        return;
-      }
+      await sendLoginCode(mobile);
+      setCode("");
+      setStep("code");
+      setResendIn(RESEND_WAIT);
+    } catch (sendError) {
+      setError(sendError instanceof Error ? sendError.message : "Couldn't send the code.");
+    } finally {
+      setIsBusy(false);
+    }
+  }
+
+  function submitMobile(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!PHONE_PATTERN.test(mobile)) {
+      setError("Enter a valid 10-digit mobile number.");
+      return;
+    }
+    void sendCode();
+  }
+
+  async function submitCode(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!CODE_PATTERN.test(code)) {
+      setError("Enter the 6-digit code from the SMS.");
+      return;
+    }
+    setIsBusy(true);
+    setError(undefined);
+    try {
+      await verifyLoginCode(mobile, code);
       router.replace(returnTo ?? routes.orders);
-    } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "Something went wrong.");
+    } catch (verifyError) {
+      setError(verifyError instanceof Error ? verifyError.message : "Couldn't check the code.");
       setIsBusy(false);
     }
   }
@@ -114,86 +129,91 @@ export function AccountPanel({ returnTo }: AccountPanelProps) {
   return (
     <Container width="narrow" className="flex enter-up flex-col gap-5 py-8 sm:py-12">
       <AccountHeading
-        title={mode === "log-in" ? "Log in" : "Create an account"}
+        title="Log in or Sign up"
         text={
           returnTo
-            ? "Please log in or register to buy. Your cart is saved."
-            : "Log in to buy and to see your orders on any device."
+            ? "Please log in with your mobile number to buy. Your cart is saved."
+            : "Use your mobile number to buy and to see your orders on any device."
         }
       />
       <Card className="flex flex-col gap-4 p-4 sm:p-6">
-        <div
-          role="tablist"
-          aria-label="Log in or register"
-          className="grid grid-cols-2 gap-1 rounded-xl bg-surface-muted p-1"
-        >
-          {(["log-in", "register"] as const).map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              role="tab"
-              aria-selected={mode === tab}
-              onClick={() => switchMode(tab)}
-              className={cn(
-                "rounded-lg py-2 text-sm font-semibold transition-colors",
-                mode === tab ? "bg-surface text-brand shadow-sm" : "text-ink-muted hover:text-ink",
-              )}
+        {step === "mobile" ? (
+          <form noValidate onSubmit={submitMobile} className="flex flex-col gap-4">
+            <FormField
+              id="login-mobile"
+              label="Mobile number"
+              error={error}
+              hint="We'll send a 6-digit code by SMS."
             >
-              {tab === "log-in" ? "Log in" : "Register"}
-            </button>
-          ))}
-        </div>
-        {notice && (
-          <p role="status" className="rounded-xl bg-positive-soft p-3 text-sm text-positive">
-            {notice}
-          </p>
-        )}
-        <form noValidate onSubmit={submit} className="flex flex-col gap-4">
-          {mode === "register" && (
-            <FormField id="account-name" label="Full name">
+              <div className="flex gap-2">
+                <span className="flex h-12 items-center rounded-xl border border-line bg-surface-muted px-3 font-semibold text-ink">
+                  +91
+                </span>
+                <TextInput
+                  id="login-mobile"
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel-national"
+                  placeholder="10-digit mobile number"
+                  value={mobile}
+                  error={error}
+                  onChange={(event) => setMobile(digitsOnly(event.target.value, 10))}
+                />
+              </div>
+            </FormField>
+            <Button type="submit" variant="buy" size="lg" fullWidth disabled={isBusy}>
+              {isBusy ? "Sending code…" : "Send Code"}
+            </Button>
+          </form>
+        ) : (
+          <form noValidate onSubmit={submitCode} className="flex flex-col gap-4">
+            <FormField
+              id="login-code"
+              label="Enter the 6-digit code"
+              error={error}
+              hint={
+                <>
+                  Sent by SMS to{" "}
+                  <span className="font-semibold text-ink">{formatMobile(mobile)}</span>
+                </>
+              }
+            >
               <TextInput
-                id="account-name"
-                autoComplete="name"
-                value={fullName}
-                onChange={(event) => setFullName(event.target.value)}
+                id="login-code"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder="123456"
+                value={code}
+                error={error}
+                onChange={(event) => setCode(digitsOnly(event.target.value, 6))}
               />
             </FormField>
-          )}
-          <FormField id="account-email" label="Email address">
-            <TextInput
-              id="account-email"
-              type="email"
-              autoComplete="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-          </FormField>
-          <FormField
-            id="account-password"
-            label="Password"
-            error={error}
-            hint={mode === "register" ? `At least ${MIN_PASSWORD_LENGTH} characters.` : undefined}
-          >
-            <TextInput
-              id="account-password"
-              type="password"
-              autoComplete={mode === "log-in" ? "current-password" : "new-password"}
-              value={password}
-              error={error}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </FormField>
-          <Button type="submit" variant="buy" size="lg" fullWidth disabled={isBusy}>
-            {isBusy
-              ? mode === "log-in"
-                ? "Logging in…"
-                : "Creating account…"
-              : mode === "log-in"
-                ? "Log in"
-                : "Create Account"}
-          </Button>
-        </form>
+            <Button type="submit" variant="buy" size="lg" fullWidth disabled={isBusy}>
+              {isBusy ? "Checking…" : "Verify and Continue"}
+            </Button>
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <button
+                type="button"
+                disabled={isBusy}
+                onClick={() => {
+                  setStep("mobile");
+                  setError(undefined);
+                }}
+                className="font-semibold text-brand hover:underline disabled:opacity-60"
+              >
+                Change number
+              </button>
+              <button
+                type="button"
+                disabled={isBusy || resendIn > 0}
+                onClick={() => void sendCode()}
+                className="font-semibold text-brand hover:underline disabled:text-ink-muted disabled:no-underline"
+              >
+                {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
+              </button>
+            </div>
+          </form>
+        )}
       </Card>
     </Container>
   );

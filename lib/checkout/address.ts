@@ -64,7 +64,8 @@ export const EMPTY_ADDRESS: Address = {
 
 export type AddressErrors = Partial<Record<keyof Address, string>>;
 
-const PHONE_PATTERN = /^[6-9]\d{9}$/;
+/** A 10-digit Indian mobile number, without +91. */
+export const PHONE_PATTERN = /^[6-9]\d{9}$/;
 export const PINCODE_PATTERN = /^[1-9]\d{5}$/;
 
 /** Returns a message for each field that needs fixing; an empty object means the address is valid. */

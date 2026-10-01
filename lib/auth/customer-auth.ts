@@ -5,9 +5,12 @@ import type { User } from "@supabase/supabase-js";
 import { getCheckoutSnapshot, mergeIntoCart } from "@/lib/checkout/store";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
-// Customers log in or register with email and password. Browsing and filling the cart work
-// without an account (as an anonymous guest); buying needs one. Whatever the guest put in
-// the cart moves into the account they log in to.
+// Customers log in with their mobile number and a 6-digit code sent by SMS. The first login
+// creates the account, so there is no separate registration. Browsing and filling the cart
+// work without an account (as an anonymous guest); buying needs one. Whatever the guest put
+// in the cart moves into the account they log in to.
+
+const INDIA_COUNTRY_CODE = "+91";
 
 /** The admin account is kept apart from the shop: it can't log in or buy here. */
 function isAdminUser(user: User): boolean {
@@ -19,73 +22,58 @@ export function hasAccount(user: User | null): boolean {
   return Boolean(user && !user.is_anonymous && !isAdminUser(user));
 }
 
+/** "9876543210" → "+919876543210", the format Supabase stores. */
+function toInternational(mobile: string): string {
+  return `${INDIA_COUNTRY_CODE}${mobile}`;
+}
+
+/** "919876543210" (as Supabase returns it) → "+91 98765 43210", for display. */
+export function formatMobile(phone: string | undefined): string {
+  const digits = (phone ?? "").replace(/\D/g, "").slice(-10);
+  return digits.length === 10 ? `+91 ${digits.slice(0, 5)} ${digits.slice(5)}` : (phone ?? "");
+}
+
 function friendlyMessage(error: { message: string; code?: string; status?: number }): string {
   switch (error.code) {
-    case "invalid_credentials":
-      return "Wrong email or password.";
-    case "email_not_confirmed":
-      return "Confirm your email first: open the link we sent you, then log in.";
-    case "user_already_exists":
-    case "email_exists":
-      return "An account with this email already exists. Log in instead.";
-    case "weak_password":
-      return "Choose a stronger password (at least 6 characters).";
+    case "otp_expired":
+      return "That code is wrong or has expired. Check it, or send a new one.";
+    case "phone_provider_disabled":
+    case "sms_send_failed":
+      return "We couldn't send the SMS right now. Please try again later.";
+    case "over_sms_send_rate_limit":
     case "over_request_rate_limit":
-    case "over_email_send_rate_limit":
-      return "Too many tries. Please wait a minute and try again.";
+      return "Too many codes sent. Please wait a minute and try again.";
     default:
       return error.message;
   }
 }
 
-/** The guest's cart, so it can follow them into the account. */
-function takeGuestCart() {
-  return getCheckoutSnapshot()?.cart ?? [];
-}
-
-export async function logIn(email: string, password: string): Promise<void> {
-  const guestCart = takeGuestCart();
-  const supabase = getSupabaseBrowserClient();
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw new Error(friendlyMessage(error));
-  if (isAdminUser(data.user)) {
-    await supabase.auth.signOut({ scope: "local" });
-    throw new Error("This is the admin account. Please use a customer account to shop.");
-  }
-  await mergeIntoCart(guestCart);
-}
-
-export type RegisterResult = "signed-in" | "confirm-email";
-
-/**
- * Creates an account. If the project asks new customers to confirm their email, they are not
- * signed in yet and must open the link first ("confirm-email").
- */
-export async function register(
-  fullName: string,
-  email: string,
-  password: string,
-): Promise<RegisterResult> {
-  const guestCart = takeGuestCart();
-  const { data, error } = await getSupabaseBrowserClient().auth.signUp({
-    email,
-    password,
-    options: {
-      data: { full_name: fullName },
-      emailRedirectTo: `${window.location.origin}/account`,
-    },
+/** Sends a 6-digit login code by SMS to a 10-digit Indian mobile number. */
+export async function sendLoginCode(mobile: string): Promise<void> {
+  const { error } = await getSupabaseBrowserClient().auth.signInWithOtp({
+    phone: toInternational(mobile),
   });
   if (error) throw new Error(friendlyMessage(error));
-  // Supabase hides whether an email is taken: an existing address comes back with no identities.
-  if (data.user && data.user.identities?.length === 0) {
-    throw new Error(friendlyMessage({ message: "", code: "user_already_exists" }));
+}
+
+/** Checks the code and logs the customer in, bringing their guest cart along. */
+export async function verifyLoginCode(mobile: string, code: string): Promise<void> {
+  const guestCart = getCheckoutSnapshot()?.cart ?? [];
+  const supabase = getSupabaseBrowserClient();
+  const { data, error } = await supabase.auth.verifyOtp({
+    phone: toInternational(mobile),
+    token: code,
+    type: "sms",
+  });
+  if (error) throw new Error(friendlyMessage(error));
+  if (data.user && isAdminUser(data.user)) {
+    await supabase.auth.signOut({ scope: "local" });
+    throw new Error("This number belongs to the admin account. Please use another number.");
   }
-  if (!data.session) return "confirm-email";
   await mergeIntoCart(guestCart);
-  return "signed-in";
 }
 
 export async function signOut(): Promise<void> {
-  const { error } = await getSupabaseBrowserClient().auth.signOut();
+  const { error } = await getSupabaseBrowserClient().auth.signOut({ scope: "local" });
   if (error) throw new Error(error.message);
 }
