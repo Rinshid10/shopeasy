@@ -29,7 +29,7 @@ export function PriceTiles({ counts }: PriceTilesProps) {
           <Link
             href={routes.searchUnder(limit)}
             className={cn(
-              "group flex h-full pressable flex-col items-center justify-center gap-0.5 rounded-3xl border-2 border-dashed border-current/25 px-3 py-5 text-center hover:-translate-y-1 hover:shadow-lg sm:py-6",
+              "group flex h-full flex-col items-center justify-center gap-0.5 rounded-3xl border-2 border-dashed border-current/25 px-3 py-5 text-center hover:-translate-y-1 hover:shadow-lg sm:py-6",
               TILE_STYLES[index % TILE_STYLES.length],
             )}
           >

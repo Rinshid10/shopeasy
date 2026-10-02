@@ -27,7 +27,7 @@ export function SearchInput({ value, onChange, label }: SearchInputProps) {
         placeholder={label}
         autoComplete="off"
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-xl border border-line bg-surface pr-3 pl-10 text-base text-ink transition-colors placeholder:text-ink-muted focus:border-brand sm:text-sm"
+        className="h-11 w-full rounded-xl border border-line bg-surface pr-3 pl-10 text-base text-ink placeholder:text-ink-muted focus:border-brand sm:text-sm"
       />
     </div>
   );

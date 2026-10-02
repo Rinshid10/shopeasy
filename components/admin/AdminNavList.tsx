@@ -60,7 +60,7 @@ export function AdminNavList({ onNavigate }: AdminNavListProps) {
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex pressable items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium",
+                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium",
                 active
                   ? "bg-brand-soft font-semibold text-brand-strong"
                   : "text-ink-muted hover:bg-surface-muted hover:text-ink",

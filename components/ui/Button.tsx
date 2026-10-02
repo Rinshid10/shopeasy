@@ -18,7 +18,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   /** Filled purple: the main buy action. */
   buy: "rounded-xl bg-brand text-surface hover:bg-brand-strong",
   outline: "rounded-xl border border-line bg-surface text-ink hover:border-ink",
-  /** Purple outline: the secondary action beside a buy button, e.g. Add to Cart. */
+  /** Purple outline: a secondary action, e.g. Edit. */
   "outline-brand": "rounded-xl border border-brand bg-surface text-brand hover:bg-brand-soft",
   /** Green: sends something to WhatsApp. */
   whatsapp: "rounded-xl bg-positive text-surface hover:bg-positive/90",
@@ -40,7 +40,7 @@ export function buttonClasses({
   className,
 }: ButtonStyleOptions = {}): string {
   return cn(
-    "pressable inline-flex items-center justify-center gap-2 text-center leading-tight font-semibold",
+    " inline-flex items-center justify-center gap-2 text-center leading-tight font-semibold",
     "disabled:cursor-not-allowed disabled:opacity-60",
     variantClasses[variant],
     sizeClasses[size],

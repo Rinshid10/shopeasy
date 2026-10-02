@@ -22,7 +22,7 @@ export function SaveStatus({ state }: SaveStatusProps) {
     <p
       role={isError ? "alert" : "status"}
       className={cn(
-        "flex enter-up items-start gap-2 rounded-xl p-3 text-xs",
+        "flex items-start gap-2 rounded-xl p-3 text-xs",
         isError && "bg-negative-soft text-negative",
         state.status === "saved" && "bg-positive-soft text-positive",
         state.status === "saving" && "bg-surface-muted text-ink-muted",

@@ -48,7 +48,7 @@ export default async function AdminDashboardPage() {
         description={`Your store at a glance. Figures cover the last ${KPI_DAYS} days unless noted.`}
       />
       <div className="flex flex-col gap-5">
-        <section aria-labelledby="needs-attention-heading" className="enter-up">
+        <section aria-labelledby="needs-attention-heading" className="">
           <h2 id="needs-attention-heading" className="mb-3 text-sm font-bold text-ink">
             Needs your attention
           </h2>
@@ -84,7 +84,7 @@ export default async function AdminDashboardPage() {
 
         <section
           aria-label={`Last ${KPI_DAYS} days`}
-          className="grid enter-up grid-cols-2 gap-3 [--enter-delay:80ms] lg:grid-cols-4"
+          className="grid grid-cols-2 gap-3 lg:grid-cols-4"
         >
           <StatTile
             label="Revenue"
@@ -117,7 +117,7 @@ export default async function AdminDashboardPage() {
           <AdminCard
             title="Sales"
             description={`Revenue per day, last ${CHART_DAYS} days. Cancelled and returned orders are left out.`}
-            className="reveal xl:col-span-2"
+            className="xl:col-span-2"
           >
             <SalesChart days={dailySales(orders, now, CHART_DAYS)} />
           </AdminCard>
@@ -125,7 +125,7 @@ export default async function AdminDashboardPage() {
             title="Top products"
             description="By revenue, last 30 days"
             action={{ label: "All products", href: routes.admin.products }}
-            className="reveal"
+            className=""
           >
             <TopProducts products={topProducts(orders)} />
           </AdminCard>
@@ -135,14 +135,14 @@ export default async function AdminDashboardPage() {
           <AdminCard
             title="Recent orders"
             action={{ label: "All orders", href: routes.admin.orders }}
-            className="reveal xl:col-span-2"
+            className="xl:col-span-2"
           >
             <RecentOrders orders={orders.slice(0, 6)} />
           </AdminCard>
           <AdminCard
             title="Stock alerts"
             action={{ label: "Inventory", href: routes.admin.inventory }}
-            className="reveal"
+            className=""
           >
             <LowStock products={lowStock.slice(0, 6)} />
           </AdminCard>

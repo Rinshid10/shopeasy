@@ -247,6 +247,8 @@ export type Database = {
         Row: {
           address: Json;
           cancelled_at: string | null;
+          customer_email: string | null;
+          customer_name: string;
           delivery_charge: number;
           id: string;
           payment_method: string;
@@ -261,6 +263,8 @@ export type Database = {
         Insert: {
           address: Json;
           cancelled_at?: string | null;
+          customer_email?: string | null;
+          customer_name?: string;
           delivery_charge: number;
           id: string;
           payment_method?: string;
@@ -275,6 +279,8 @@ export type Database = {
         Update: {
           address?: Json;
           cancelled_at?: string | null;
+          customer_email?: string | null;
+          customer_name?: string;
           delivery_charge?: number;
           id?: string;
           payment_method?: string;
@@ -328,6 +334,7 @@ export type Database = {
           cons: string[];
           created_at: string;
           description: string;
+          extra_image_paths: string[];
           id: string;
           image_path: string | null;
           is_top_pick: boolean;
@@ -340,6 +347,7 @@ export type Database = {
           short_description: string;
           sku: string;
           slug: string;
+          specs: Json;
           status: string;
           stock: number;
           title: string;
@@ -351,6 +359,7 @@ export type Database = {
           cons?: string[];
           created_at?: string;
           description?: string;
+          extra_image_paths?: string[];
           id?: string;
           image_path?: string | null;
           is_top_pick?: boolean;
@@ -363,6 +372,7 @@ export type Database = {
           short_description?: string;
           sku: string;
           slug: string;
+          specs?: Json;
           status?: string;
           stock?: number;
           title: string;
@@ -374,6 +384,7 @@ export type Database = {
           cons?: string[];
           created_at?: string;
           description?: string;
+          extra_image_paths?: string[];
           id?: string;
           image_path?: string | null;
           is_top_pick?: boolean;
@@ -386,6 +397,7 @@ export type Database = {
           short_description?: string;
           sku?: string;
           slug?: string;
+          specs?: Json;
           status?: string;
           stock?: number;
           title?: string;
@@ -403,6 +415,7 @@ export type Database = {
       };
       profiles: {
         Row: {
+          contact_email: string | null;
           created_at: string;
           email: string | null;
           full_name: string;
@@ -411,6 +424,7 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          contact_email?: string | null;
           created_at?: string;
           email?: string | null;
           full_name?: string;
@@ -419,6 +433,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          contact_email?: string | null;
           created_at?: string;
           email?: string | null;
           full_name?: string;

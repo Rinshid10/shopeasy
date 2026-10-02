@@ -50,7 +50,7 @@ export function AdminSignOutButton({ initial, email }: AdminSignOutButtonProps) 
       onClick={() => setIsConfirming(true)}
       aria-label={`Signed in as ${email}. Sign out`}
       title={`${email}: sign out`}
-      className="flex size-10 pressable items-center justify-center rounded-full bg-ink text-sm font-bold text-surface"
+      className="flex size-10 items-center justify-center rounded-full bg-ink text-sm font-bold text-surface"
     >
       {initial}
     </button>

@@ -11,7 +11,7 @@ export type {
   PaymentMethod,
 } from "./checkout";
 export type { BreadcrumbItem, NavLink } from "./navigation";
-export type { Product } from "./product";
+export type { Product, ProductSpec } from "./product";
 export type {
   AdminOrder,
   AdminOrderEvent,

@@ -1,10 +1,9 @@
 import { CheckIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 
-export type CheckoutStep = "cart" | "address" | "payment" | "summary";
+export type CheckoutStep = "address" | "payment" | "summary";
 
 const STEPS: { id: CheckoutStep; label: string }[] = [
-  { id: "cart", label: "Cart" },
   { id: "address", label: "Address" },
   { id: "payment", label: "Payment" },
   { id: "summary", label: "Summary" },
@@ -31,7 +30,7 @@ export function CheckoutSteps({ current }: CheckoutStepsProps) {
                 <span
                   aria-current={isCurrent ? "step" : undefined}
                   className={cn(
-                    "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors duration-300",
+                    "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
                     isDone && "bg-brand text-surface",
                     isCurrent && "bg-brand text-surface ring-4 ring-brand-soft",
                     !isDone && !isCurrent && "border-2 border-line bg-surface text-ink-muted",
@@ -43,7 +42,7 @@ export function CheckoutSteps({ current }: CheckoutStepsProps) {
                   <span
                     aria-hidden="true"
                     className={cn(
-                      "mx-1 h-0.5 flex-1 rounded-full transition-colors duration-300",
+                      "mx-1 h-0.5 flex-1 rounded-full",
                       isDone ? "bg-brand" : "bg-line",
                     )}
                   />

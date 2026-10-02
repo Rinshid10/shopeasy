@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { AddressCard } from "@/components/checkout/AddressCard";
 import { CheckoutLayout } from "@/components/checkout/CheckoutLayout";
 import { CheckoutLoading, EmptyCart } from "@/components/checkout/CheckoutStatus";
-import { OrderLines } from "@/components/checkout/OrderLines";
+import { CartItemRow } from "@/components/checkout/CartItemRow";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CashIcon } from "@/components/ui/icons";
@@ -92,21 +92,12 @@ export function SummaryStep({ products }: SummaryStepProps) {
         <AddressCard address={address} />
       </Card>
       <Card className="flex flex-col gap-3 p-4 sm:p-5">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="font-bold text-ink">Products</h2>
-          <Link href={routes.cart} className={changeLinkClasses}>
-            Edit
-          </Link>
-        </div>
-        <OrderLines
-          lines={view.lines.map(({ product, quantity }) => ({
-            productSlug: product.slug,
-            title: product.title,
-            imageUrl: product.imageUrl,
-            price: product.price,
-            quantity,
-          }))}
-        />
+        <h2 className="font-bold text-ink">Product</h2>
+        <ul className="divide-y divide-line">
+          {view.lines.map((line) => (
+            <CartItemRow key={line.product.slug} line={line} />
+          ))}
+        </ul>
       </Card>
       <Card className="flex items-center gap-3 p-4 sm:p-5">
         <CashIcon className="size-6 shrink-0 text-brand" />

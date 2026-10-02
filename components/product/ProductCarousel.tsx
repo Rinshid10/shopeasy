@@ -9,21 +9,19 @@ interface ProductCarouselProps {
   products: Product[];
   /** Describes the row for screen readers, e.g. "Biggest discounts". */
   label: string;
-  /** See ProductCard: off when these products also appear elsewhere on the page. */
-  morph?: boolean;
 }
 
 const arrowClasses =
-  "pressable absolute top-1/3 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-surface text-ink shadow-lg hover:border-brand hover:text-brand md:flex";
+  " absolute top-1/3 z-10 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-surface text-ink shadow-lg hover:border-brand hover:text-brand md:flex";
 
 /** A row of product cards that swipes sideways on phones and has arrow buttons on larger screens. */
-export function ProductCarousel({ products, label, morph = true }: ProductCarouselProps) {
+export function ProductCarousel({ products, label }: ProductCarouselProps) {
   const trackRef = useRef<HTMLUListElement>(null);
 
   function scrollByPage(direction: 1 | -1) {
     const track = trackRef.current;
     if (track) {
-      track.scrollBy({ left: direction * track.clientWidth * 0.9, behavior: "smooth" });
+      track.scrollBy({ left: direction * track.clientWidth * 0.9, behavior: "instant" });
     }
   }
 
@@ -44,7 +42,7 @@ export function ProductCarousel({ products, label, morph = true }: ProductCarous
       >
         {products.map((product) => (
           <li key={product.slug} className="w-40 shrink-0 snap-start sm:w-48 lg:w-52">
-            <ProductCard product={product} morph={morph} />
+            <ProductCard product={product} />
           </li>
         ))}
       </ul>

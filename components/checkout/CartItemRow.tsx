@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { ProductImage } from "@/components/product/ProductImage";
 import { ProductPrice } from "@/components/product/ProductPrice";
-import { MinusIcon, PlusIcon, TrashIcon } from "@/components/ui/icons";
+import { MinusIcon, PlusIcon } from "@/components/ui/icons";
 import type { CartLine } from "@/lib/checkout/pricing";
-import { removeFromCart, setCartQuantity } from "@/lib/checkout/store";
+import { setCartQuantity } from "@/lib/checkout/store";
 import { routes } from "@/lib/routes";
 import { siteConfig } from "@/lib/site-config";
 
@@ -14,9 +14,9 @@ interface CartItemRowProps {
 }
 
 const stepperButtonClasses =
-  "pressable flex size-9 items-center justify-center text-ink hover:bg-surface-muted disabled:cursor-not-allowed disabled:text-ink-soft disabled:hover:bg-transparent";
+  " flex size-9 items-center justify-center text-ink hover:bg-surface-muted disabled:cursor-not-allowed disabled:text-ink-soft disabled:hover:bg-transparent";
 
-/** One product in the cart, with a quantity stepper and a remove button. */
+/** The product being bought, with a quantity stepper. */
 export function CartItemRow({ line }: CartItemRowProps) {
   const { product, quantity } = line;
   const maxQuantity = siteConfig.store.maxQuantityPerItem;
@@ -34,7 +34,7 @@ export function CartItemRow({ line }: CartItemRowProps) {
           {product.title}
         </Link>
         <ProductPrice price={product.price} mrp={product.mrp} />
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
           <div className="flex items-center overflow-hidden rounded-lg border border-line">
             <button
               type="button"
@@ -59,14 +59,6 @@ export function CartItemRow({ line }: CartItemRowProps) {
               <PlusIcon className="size-4" />
             </button>
           </div>
-          <button
-            type="button"
-            onClick={() => removeFromCart(product.slug)}
-            className="flex pressable items-center gap-1 rounded-lg px-2 py-1.5 text-sm font-medium text-ink-muted hover:bg-surface-muted hover:text-ink"
-          >
-            <TrashIcon className="size-4" />
-            Remove
-          </button>
         </div>
       </div>
     </li>

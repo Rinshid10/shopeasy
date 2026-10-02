@@ -14,7 +14,7 @@ interface AdminPageHeaderProps {
 /** The title row at the top of every admin screen. */
 export function AdminPageHeader({ title, description, back, actions }: AdminPageHeaderProps) {
   return (
-    <div className="mb-5 flex enter-up flex-col gap-3 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
       <div className="flex flex-col gap-1">
         {back && (
           <Link

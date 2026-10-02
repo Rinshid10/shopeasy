@@ -27,7 +27,7 @@ export function CheckoutLayout({ step, title, summary, action, children }: Check
       <CheckoutSteps current={step} />
       <h1 className="text-xl font-extrabold tracking-tight text-ink sm:text-2xl">{title}</h1>
       <div className="grid items-start gap-5 md:grid-cols-[1fr_20rem]">
-        <div className="flex enter-up flex-col gap-4">{children}</div>
+        <div className="flex flex-col gap-4">{children}</div>
         <aside className="flex flex-col gap-4 md:sticky md:top-40">
           <Card className="p-4 sm:p-5">
             <PriceDetails summary={summary} />

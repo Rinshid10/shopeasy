@@ -48,7 +48,7 @@ export function MobileNav({ links }: MobileNavProps) {
         aria-controls={panelId}
         aria-label={isOpen ? "Close menu" : "Open menu"}
         onClick={() => setIsOpen((open) => !open)}
-        className="flex size-10 pressable items-center justify-center rounded-lg text-ink hover:bg-surface-muted"
+        className="flex size-10 items-center justify-center rounded-lg text-ink hover:bg-surface-muted"
       >
         {isOpen ? <CloseIcon className="size-6" /> : <MenuIcon className="size-6" />}
       </button>
@@ -56,7 +56,7 @@ export function MobileNav({ links }: MobileNavProps) {
         aria-hidden="true"
         onClick={() => setIsOpen(false)}
         className={cn(
-          "fixed inset-x-0 top-14 bottom-0 bg-ink/40 transition-[opacity,visibility] duration-200 md:top-[4.5rem]",
+          "fixed inset-x-0 top-14 bottom-0 bg-ink/40 md:top-[4.5rem]",
           isOpen ? "visible opacity-100" : "invisible opacity-0",
         )}
       />
@@ -64,7 +64,7 @@ export function MobileNav({ links }: MobileNavProps) {
         id={panelId}
         aria-label="Mobile"
         className={cn(
-          "absolute inset-x-0 top-full max-h-[calc(100dvh-3.5rem)] overflow-y-auto rounded-b-3xl border-t border-line bg-surface shadow-xl transition-[opacity,translate,visibility] duration-200 ease-out",
+          "absolute inset-x-0 top-full max-h-[calc(100dvh-3.5rem)] overflow-y-auto rounded-b-3xl border-t border-line bg-surface shadow-xl",
           isOpen ? "visible translate-y-0 opacity-100" : "invisible -translate-y-3 opacity-0",
         )}
       >
@@ -74,7 +74,7 @@ export function MobileNav({ links }: MobileNavProps) {
               <Link
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="flex pressable items-center justify-between gap-3 rounded-lg px-2 py-3.5 font-medium text-ink hover:text-brand"
+                className="flex items-center justify-between gap-3 rounded-lg px-2 py-3.5 font-medium text-ink hover:text-brand"
               >
                 {link.label}
                 <ChevronRightIcon className="size-4 text-ink-muted" />

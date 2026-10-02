@@ -3,27 +3,26 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 import { CheckoutLoading } from "@/components/checkout/CheckoutStatus";
-import { hasAccount } from "@/lib/auth/customer-auth";
-import { useAuthUser } from "@/lib/auth/use-auth-user";
+import { useCustomer } from "@/lib/auth/use-customer";
 import { routes } from "@/lib/routes";
 
 /**
- * Shows its content only to customers with an account. Guests and visitors are sent to log
- * in or register, then come back here. Buying always needs an account.
+ * Shows its content only to customers who may buy: logged in, or a guest who gave their name
+ * and email. Everyone else is sent to the login page, then comes back here.
  */
 export function RequireAccount({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isLoaded, user } = useAuthUser();
-  const isAllowed = hasAccount(user);
+  const customer = useCustomer();
+  const mustLogIn = customer.status === "none";
 
   useEffect(() => {
-    if (isLoaded && !isAllowed) {
+    if (mustLogIn) {
       router.replace(routes.login(pathname));
     }
-  }, [isLoaded, isAllowed, pathname, router]);
+  }, [mustLogIn, pathname, router]);
 
-  if (!isLoaded || !isAllowed) {
+  if (customer.status === "loading" || mustLogIn) {
     return <CheckoutLoading />;
   }
   return children;

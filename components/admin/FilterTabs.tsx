@@ -32,7 +32,7 @@ export function FilterTabs<T extends string>({ tabs, value, onChange, label }: F
             aria-pressed={isSelected}
             onClick={() => onChange(tab.value)}
             className={cn(
-              "flex shrink-0 pressable items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium whitespace-nowrap",
+              "flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium whitespace-nowrap",
               isSelected
                 ? "border-ink bg-ink text-surface"
                 : "border-line bg-surface text-ink hover:border-ink",

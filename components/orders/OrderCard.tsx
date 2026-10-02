@@ -22,7 +22,7 @@ export function OrderCard({ order }: OrderCardProps) {
   return (
     <Link
       href={routes.orderDetails(order.id)}
-      className="group flex pressable reveal items-center gap-3 rounded-2xl border border-line bg-surface p-3 hover:border-brand/30 hover:shadow-lg sm:gap-4 sm:p-4"
+      className="group flex items-center gap-3 rounded-2xl border border-line bg-surface p-3 hover:border-brand/30 hover:shadow-lg sm:gap-4 sm:p-4"
     >
       <div className="flex shrink-0 -space-x-6">
         {order.lines.slice(0, MAX_PREVIEW_IMAGES).map((line) => (
@@ -52,7 +52,7 @@ export function OrderCard({ order }: OrderCardProps) {
           {order.id}
         </p>
       </div>
-      <ChevronRightIcon className="size-5 shrink-0 text-ink-muted transition-transform group-hover:translate-x-0.5" />
+      <ChevronRightIcon className="size-5 shrink-0 text-ink-muted group-hover:translate-x-0.5" />
     </Link>
   );
 }

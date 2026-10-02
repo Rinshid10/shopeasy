@@ -1,7 +1,6 @@
 import { ProductSearchResults } from "@/components/product/ProductSearchResults";
 import { SearchForm } from "@/components/product/SearchForm";
 import { Container } from "@/components/ui/Container";
-import { PageTransition } from "@/components/ui/PageTransition";
 import { getProducts } from "@/lib/products";
 import { routes } from "@/lib/routes";
 import { buildPageMetadata } from "@/lib/seo";
@@ -20,7 +19,7 @@ export default async function SearchPage() {
   const products = await getProducts();
 
   return (
-    <PageTransition>
+    <>
       <Container className="flex flex-col gap-4 py-6 sm:py-8">
         <h1 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
           Search products
@@ -31,6 +30,6 @@ export default async function SearchPage() {
         </div>
         <ProductSearchResults products={products} />
       </Container>
-    </PageTransition>
+    </>
   );
 }

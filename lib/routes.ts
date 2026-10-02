@@ -7,7 +7,6 @@ export const routes = {
   searchUnder: (maxPrice: number) => `/search?maxPrice=${maxPrice}`,
   category: (slug: string) => `/category/${slug}`,
   product: (slug: string) => `/product/${slug}`,
-  cart: "/cart",
   checkoutAddress: "/checkout/address",
   checkoutPayment: "/checkout/payment",
   checkoutSummary: "/checkout/summary",

@@ -40,9 +40,8 @@ export function OrderSuccess() {
 
   return (
     <Container width="narrow" className="flex flex-col gap-5 py-8 sm:py-12">
-      <section className="flex enter-up flex-col items-center gap-3 text-center">
+      <section className="flex flex-col items-center gap-3 text-center">
         <span className="relative flex size-20 items-center justify-center">
-          <span className="absolute inset-0 animate-ping rounded-full bg-positive/20 [animation-iteration-count:2]" />
           <span className="relative flex size-20 items-center justify-center rounded-full bg-positive text-surface shadow-lg shadow-positive/30">
             <CheckIcon className="size-10" />
           </span>
@@ -55,7 +54,7 @@ export function OrderSuccess() {
           Expected delivery by {deliveryDate}
         </p>
       </section>
-      <div className="grid enter-up gap-4 [--enter-delay:150ms] md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card className="flex flex-col gap-3 p-4 sm:p-5">
           <h2 className="font-bold text-ink">Delivering to</h2>
           <AddressCard address={order.address} />
@@ -69,7 +68,7 @@ export function OrderSuccess() {
           </p>
         </Card>
       </div>
-      <div className="mx-auto flex w-full max-w-md enter-up flex-col gap-2 text-center [--enter-delay:200ms]">
+      <div className="mx-auto flex w-full max-w-md flex-col gap-2 text-center">
         <WhatsAppOrderButton order={order} />
         <p className="text-xs text-ink-muted">
           WhatsApp opens with your order details. Tap send to keep them in your chat.
@@ -78,7 +77,7 @@ export function OrderSuccess() {
       {siteConfig.demoStore.isEnabled && (
         <p className="text-center text-sm text-ink-muted">{siteConfig.demoStore.orderNote}</p>
       )}
-      <div className="mx-auto grid w-full max-w-md enter-up gap-3 [--enter-delay:300ms] sm:grid-cols-2">
+      <div className="mx-auto grid w-full max-w-md gap-3 sm:grid-cols-2">
         <ButtonLink
           href={routes.orderDetails(order.id)}
           variant="outline-brand"

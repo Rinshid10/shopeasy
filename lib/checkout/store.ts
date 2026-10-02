@@ -4,9 +4,10 @@ import { siteConfig } from "@/lib/site-config";
 import type { Address, CartItem, CheckoutState, Order, OrderStatus, PaymentMethod } from "@/types";
 import type { Tables } from "@/types/supabase";
 
-// The cart, saved address and orders live in Supabase, under the visitor's account. Visitors
-// get an anonymous account the first time they add to the cart, so nobody has to sign up to
-// shop; they can attach an email later to keep their history.
+// The product being bought, saved address and orders live in Supabase, under the visitor's
+// account. The shop has no cart: "Buy Now" selects one product for checkout (kept in the
+// cart_items table). Visitors get an anonymous account on their first Buy Now, then must log
+// in, or give their name and email, before the order is placed.
 //
 // Components read an in-memory copy through useCheckout(). Changes show at once and are then
 // written to the database in order; if a write fails, the copy is reloaded from the database.
@@ -190,6 +191,8 @@ async function fetchState(): Promise<CheckoutState> {
 async function reload() {
   try {
     lastLoadedAt = Date.now();
+    // Let changes still being saved land first, so the reload can't undo them on screen.
+    await writeQueue;
     setState(await fetchState());
   } catch (error) {
     console.error("[checkout] Couldn't load the cart and orders.", error);
@@ -237,7 +240,11 @@ async function moveLegacyState() {
   }
 }
 
-function startLoading() {
+/**
+ * Starts loading the visitor's checkout data. Called by pages with Buy Now buttons, so it is
+ * ready by the time checkout opens.
+ */
+export function preloadCheckout() {
   if (loadStarted) return;
   loadStarted = true;
 
@@ -276,7 +283,7 @@ export function getServerCheckoutSnapshot(): null {
 
 export function subscribeToCheckout(listener: () => void): () => void {
   listeners.add(listener);
-  startLoading();
+  preloadCheckout();
   return () => {
     listeners.delete(listener);
   };
@@ -294,60 +301,42 @@ async function writeCartQuantity(productSlug: string, quantity: number) {
   if (error) throw error;
 }
 
-/** Adds one of a product to the cart, or one more if it is already there. */
-export function addToCart(productSlug: string) {
-  const existing = currentState?.cart.find((item) => item.productSlug === productSlug);
-  const quantity = existing ? clampQuantity(existing.quantity + 1) : 1;
-  updateState((state) => ({
-    ...state,
-    cart: existing
-      ? state.cart.map((item) => (item.productSlug === productSlug ? { ...item, quantity } : item))
-      : [...state.cart, { productSlug, quantity }],
-  }));
-  void enqueue(() => writeCartQuantity(productSlug, quantity));
-}
+/** Writes the visitor's whole selection: removes anything else, then saves these items. */
+async function writeSelection(items: CartItem[]) {
+  const userId = await requireUserId();
+  const ids = await getProductIds(items.map((item) => item.productSlug));
+  const { error: clearError } = await supabase().from("cart_items").delete().eq("user_id", userId);
+  if (clearError) throw clearError;
 
-/** Puts a product in the cart for "Buy now" without adding a second one if it is already there. */
-export function ensureInCart(productSlug: string) {
-  if (!currentState?.cart.some((item) => item.productSlug === productSlug)) {
-    addToCart(productSlug);
-  }
+  const rows = items.flatMap((item) => {
+    const productId = ids.get(item.productSlug);
+    return productId
+      ? [{ user_id: userId, product_id: productId, quantity: clampQuantity(item.quantity) }]
+      : [];
+  });
+  if (rows.length === 0) return;
+  const { error } = await supabase().from("cart_items").insert(rows);
+  if (error) throw error;
 }
 
 /**
- * Adds a guest cart to the signed-in account's cart after signing in to an existing account,
- * keeping the larger quantity where both have the same product.
+ * "Buy Now": the shop has no cart, so this replaces whatever was being bought with one of
+ * this product, ready for checkout.
  */
-export async function mergeIntoCart(items: CartItem[]): Promise<void> {
-  if (items.length === 0) return;
-  await enqueue(async () => {
-    const userId = await requireUserId();
-    const ids = await getProductIds(items.map((item) => item.productSlug));
-    const { data: existing, error: readError } = await supabase()
-      .from("cart_items")
-      .select("product_id, quantity");
-    if (readError) throw readError;
+export function buyNow(productSlug: string) {
+  const selection = [{ productSlug, quantity: 1 }];
+  updateState((state) => ({ ...state, cart: selection }));
+  void enqueue(() => writeSelection(selection));
+}
 
-    const rows = items.flatMap((item) => {
-      const productId = ids.get(item.productSlug);
-      if (!productId) return [];
-      const current = existing.find((row) => row.product_id === productId)?.quantity ?? 0;
-      return [
-        {
-          user_id: userId,
-          product_id: productId,
-          quantity: clampQuantity(Math.max(current, item.quantity)),
-        },
-      ];
-    });
-    const { error } = await supabase()
-      .from("cart_items")
-      .upsert(rows, { onConflict: "user_id,product_id" });
-    if (error) throw error;
-  });
+/** After logging in, carries the product the guest was buying into their account. */
+export async function carryOverSelection(items: CartItem[]): Promise<void> {
+  if (items.length === 0) return;
+  await enqueue(() => writeSelection(items));
   await reload();
 }
 
+/** Changes how many of the product being bought, on the order summary. */
 export function setCartQuantity(productSlug: string, quantity: number) {
   const clamped = clampQuantity(quantity);
   updateState((state) => ({
@@ -357,18 +346,6 @@ export function setCartQuantity(productSlug: string, quantity: number) {
     ),
   }));
   void enqueue(() => writeCartQuantity(productSlug, clamped));
-}
-
-export function removeFromCart(productSlug: string) {
-  updateState((state) => ({
-    ...state,
-    cart: state.cart.filter((item) => item.productSlug !== productSlug),
-  }));
-  void enqueue(async () => {
-    const productId = await getProductId(productSlug);
-    const { error } = await supabase().from("cart_items").delete().eq("product_id", productId);
-    if (error) throw error;
-  });
 }
 
 /** Saves the delivery address as the visitor's default, for this and later orders. */

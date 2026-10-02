@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition, type FormEvent } from "react";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { ProductFormFields } from "@/components/admin/products/ProductFormFields";
-import { ProductImageField } from "@/components/admin/products/ProductImageField";
+import { MeeshoPasteCard } from "@/components/admin/products/MeeshoPasteCard";
+import { ProductImagesField } from "@/components/admin/products/ProductImagesField";
 import { SaveStatus, type SaveState } from "@/components/admin/SaveStatus";
 import { Button } from "@/components/ui/Button";
 import { saveProduct } from "@/lib/admin/actions";
 import {
+  MIN_PICTURES,
   toFormValues,
   validateProductForm,
   type ProductFormErrors,
@@ -25,23 +27,36 @@ interface ProductFormProps {
   categories: Category[];
 }
 
+const PICTURES_ID = "product-pictures";
+
 const LISTING_OPTIONS: { value: ListingStatus; label: string; text: string }[] = [
   { value: "active", label: "Active", text: "Shown in the store" },
   { value: "draft", label: "Draft", text: "Hidden until you publish it" },
 ];
 
-/** Adds or edits a product: details, pricing, stock, highlights, picture and visibility. */
+/** Adds or edits a product: details, pricing, stock, highlights, pictures and visibility. */
 export function ProductForm({ product, categories }: ProductFormProps) {
   const [values, setValues] = useState<ProductFormValues>(() => toFormValues(product));
   const [errors, setErrors] = useState<ProductFormErrors>({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [imagePath, setImagePath] = useState<string | null>(product?.imagePath ?? null);
+  const [imagePaths, setImagePaths] = useState<string[]>(product?.imagePaths ?? []);
+  const needsPicture = hasSubmitted && imagePaths.length < MIN_PICTURES;
   const [saveState, setSaveState] = useState<SaveState>({ status: "idle" });
   const [isSaving, startSaving] = useTransition();
   const router = useRouter();
 
   function update<K extends keyof ProductFormValues>(field: K, value: ProductFormValues[K]) {
     const next = { ...values, [field]: value };
+    setValues(next);
+    setSaveState({ status: "idle" });
+    if (hasSubmitted) {
+      setErrors(validateProductForm(next));
+    }
+  }
+
+  /** Fills the form from pasted Meesho text, keeping a SKU that was already typed. */
+  function fillFromMeesho(filled: Partial<ProductFormValues>) {
+    const next = { ...values, ...filled, sku: values.sku || filled.sku || "" };
     setValues(next);
     setSaveState({ status: "idle" });
     if (hasSubmitted) {
@@ -59,9 +74,13 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       document.getElementById(`product-${firstInvalid}`)?.focus();
       return;
     }
+    if (imagePaths.length < MIN_PICTURES) {
+      document.getElementById(PICTURES_ID)?.scrollIntoView({ block: "center" });
+      return;
+    }
     setSaveState({ status: "saving" });
     startSaving(async () => {
-      const result = await saveProduct({ slug: product?.slug, values, imagePath });
+      const result = await saveProduct({ slug: product?.slug, values, imagePaths });
       if (!result.ok) {
         setSaveState({ status: "error", error: result.error });
         return;
@@ -75,12 +94,15 @@ export function ProductForm({ product, categories }: ProductFormProps) {
 
   return (
     <form noValidate onSubmit={submit} className="grid items-start gap-5 lg:grid-cols-[1fr_20rem]">
-      <ProductFormFields
-        values={values}
-        errors={errors}
-        categories={categories}
-        onChange={update}
-      />
+      <div className="flex flex-col gap-5">
+        <MeeshoPasteCard categories={categories} onFill={fillFromMeesho} />
+        <ProductFormFields
+          values={values}
+          errors={errors}
+          categories={categories}
+          onChange={update}
+        />
+      </div>
       <div className="flex flex-col gap-5 lg:sticky lg:top-24">
         <AdminCard title="Visibility">
           <fieldset className="flex flex-col gap-2">
@@ -111,16 +133,19 @@ export function ProductForm({ product, categories }: ProductFormProps) {
             ))}
           </fieldset>
         </AdminCard>
-        <AdminCard title="Picture">
-          <ProductImageField
-            imagePath={imagePath}
-            productTitle={values.title}
-            onChange={(path) => {
-              setImagePath(path);
-              setSaveState({ status: "idle" });
-            }}
-          />
-        </AdminCard>
+        <div id={PICTURES_ID}>
+          <AdminCard title="Pictures">
+            <ProductImagesField
+              imagePaths={imagePaths}
+              productTitle={values.title}
+              error={needsPicture ? "Add at least one picture of the product." : undefined}
+              onChange={(paths) => {
+                setImagePaths(paths);
+                setSaveState({ status: "idle" });
+              }}
+            />
+          </AdminCard>
+        </div>
         <Button type="submit" variant="buy" size="lg" fullWidth disabled={isSaving}>
           {product ? "Save changes" : "Add product"}
         </Button>

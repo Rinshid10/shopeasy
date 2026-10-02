@@ -97,7 +97,7 @@ export function SettingsForm({ settings: initial }: SettingsFormProps) {
           />
           <span
             aria-hidden="true"
-            className="relative h-6 w-11 shrink-0 rounded-full bg-line transition-colors peer-checked:bg-positive peer-focus-visible:outline-2 peer-focus-visible:outline-brand after:absolute after:top-0.5 after:left-0.5 after:size-5 after:rounded-full after:bg-surface after:shadow after:transition-transform peer-checked:after:translate-x-5"
+            className="relative h-6 w-11 shrink-0 rounded-full bg-line peer-checked:bg-positive peer-focus-visible:outline-2 peer-focus-visible:outline-brand after:absolute after:top-0.5 after:left-0.5 after:size-5 after:rounded-full after:bg-surface after:shadow peer-checked:after:translate-x-5"
           />
         </label>
         {number("codLimit", "Largest COD order (₹)", "Bigger orders would need online payment.")}

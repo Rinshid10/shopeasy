@@ -63,13 +63,13 @@ export function OfferBanners({ maxDiscountPercent, dealsHref, shopHref }: OfferB
           <Link
             href={banner.href}
             className={cn(
-              "group relative flex h-full pressable flex-col gap-1 overflow-hidden rounded-3xl bg-linear-to-br p-5 dark-section hover:-translate-y-1 hover:shadow-xl",
+              "group relative flex h-full flex-col gap-1 overflow-hidden rounded-3xl bg-linear-to-br p-5 dark-section hover:-translate-y-1 hover:shadow-xl",
               banner.className,
             )}
           >
             <span
               aria-hidden="true"
-              className="absolute -top-6 -right-6 size-28 rounded-full bg-surface/15 transition-transform duration-500 group-hover:scale-125"
+              className="absolute -top-6 -right-6 size-28 rounded-full bg-surface/15 group-hover:scale-125"
             />
             <span className="relative flex size-12 items-center justify-center rounded-2xl bg-surface/20">
               {banner.icon}
@@ -81,7 +81,7 @@ export function OfferBanners({ maxDiscountPercent, dealsHref, shopHref }: OfferB
             <span className="relative text-sm opacity-90">{banner.text}</span>
             <span className="relative mt-3 inline-flex items-center gap-1.5 text-sm font-bold">
               {banner.cta}
-              <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-1" />
+              <ArrowRightIcon className="size-4 group-hover:translate-x-1" />
             </span>
           </Link>
         </li>

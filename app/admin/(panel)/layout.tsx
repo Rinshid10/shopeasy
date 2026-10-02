@@ -30,7 +30,7 @@ export default async function AdminPanelLayout({ children }: LayoutProps<"/admin
           </div>
           <Link
             href={routes.home}
-            className="ml-auto flex pressable items-center gap-2 rounded-xl border border-line px-3 py-2 text-sm font-semibold text-ink hover:border-brand hover:text-brand"
+            className="ml-auto flex items-center gap-2 rounded-xl border border-line px-3 py-2 text-sm font-semibold text-ink hover:border-brand hover:text-brand"
           >
             <StoreIcon className="size-5" />
             <span className="max-sm:sr-only">View store</span>

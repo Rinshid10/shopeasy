@@ -18,6 +18,9 @@ export interface AdminOrder {
   placedAt: string;
   status: AdminOrderStatus;
   customerId: string;
+  /** The name and email the customer gave (account email, or guest details). */
+  customerName: string;
+  customerEmail: string | null;
   address: Address;
   lines: OrderLine[];
   /** Delivery charge in rupees, included in the total. */

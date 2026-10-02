@@ -15,6 +15,8 @@ export interface ProductFormValues {
   lowStockThreshold: string;
   pros: string;
   cons: string;
+  /** Product details, one "Label: value" per line, e.g. "Color: Blue". */
+  specs: string;
   listingStatus: ListingStatus;
 }
 
@@ -34,6 +36,7 @@ export function toFormValues(product: AdminProduct | undefined): ProductFormValu
     lowStockThreshold: product ? String(product.inventory.lowStockThreshold) : "5",
     pros: product?.pros.join("\n") ?? "",
     cons: product?.cons.join("\n") ?? "",
+    specs: product?.specs.map((spec) => `${spec.label}: ${spec.value}`).join("\n") ?? "",
     listingStatus: product?.inventory.listingStatus ?? "draft",
   };
 }
@@ -76,4 +79,19 @@ export function validateProductForm(values: ProductFormValues): ProductFormError
   }
 
   return errors;
+}
+
+/** A product needs at least this many pictures. */
+export const MIN_PICTURES = 1;
+/** The most pictures a product can have: the main one plus 3 extra. */
+export const MAX_PICTURES = 4;
+
+/** Reads the product details text ("Label: value" per line) into rows; skips other lines. */
+export function parseSpecLines(text: string): { label: string; value: string }[] {
+  return text.split("\n").flatMap((line) => {
+    const colon = line.indexOf(":");
+    const label = line.slice(0, colon).trim();
+    const value = line.slice(colon + 1).trim();
+    return colon > 0 && label && value ? [{ label, value }] : [];
+  });
 }

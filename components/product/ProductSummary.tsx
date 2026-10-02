@@ -1,4 +1,3 @@
-import { AddToCartButton } from "@/components/product/AddToCartButton";
 import { BuyNowButton } from "@/components/product/BuyNowButton";
 import { ProductPrice } from "@/components/product/ProductPrice";
 import { ProductRating } from "@/components/product/ProductRating";
@@ -49,8 +48,7 @@ export function ProductSummary({ product }: ProductSummaryProps) {
         </ul>
         {demoStore.isEnabled && <p className="text-sm text-ink-muted">{demoStore.catalogueNote}</p>}
       </div>
-      <div id={PRODUCT_MAIN_BUY_BUTTON_ID} className="grid grid-cols-2 gap-3 sm:max-w-md">
-        <AddToCartButton productSlug={product.slug} productTitle={product.title} size="lg" />
+      <div id={PRODUCT_MAIN_BUY_BUTTON_ID} className="sm:max-w-xs">
         <BuyNowButton productSlug={product.slug} productTitle={product.title} size="lg" />
       </div>
     </div>

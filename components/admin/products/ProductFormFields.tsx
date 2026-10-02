@@ -82,6 +82,21 @@ export function ProductFormFields({
           />
         </FormField>
       </AdminCard>
+      <AdminCard
+        title="Product details"
+        description='One per line, like "Color: Blue". Shown as a table on the product page.'
+      >
+        <FormField id="product-specs" label="Details (optional)">
+          <textarea
+            id="product-specs"
+            rows={6}
+            value={values.specs}
+            placeholder={"Color: Blue\nMaterial: Vinyl\nCountry of Origin: India"}
+            onChange={(event) => onChange("specs", event.target.value)}
+            className={textareaClasses(false)}
+          />
+        </FormField>
+      </AdminCard>
       <AdminCard title="Pricing">
         <div className="grid gap-4 sm:grid-cols-2">
           {number("price", "Selling price (₹)")}

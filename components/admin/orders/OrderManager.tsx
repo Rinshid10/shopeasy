@@ -74,7 +74,7 @@ export function OrderManager({ order }: OrderManagerProps) {
             href={`https://wa.me/91${order.address.phone}?text=${whatsappMessage}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex min-h-11 pressable items-center justify-center gap-2 rounded-xl border border-line px-3 text-sm font-semibold text-ink hover:border-positive hover:text-positive"
+            className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-line px-3 text-sm font-semibold text-ink hover:border-positive hover:text-positive"
           >
             <ChatIcon className="size-5" />
             WhatsApp

@@ -82,7 +82,7 @@ export function SalesChart({ days }: SalesChartProps) {
                   )}
                   <span
                     className={cn(
-                      "w-full max-w-6 rounded-t bg-brand transition-[filter] duration-150 group-focus-within:brightness-125 group-hover:brightness-125",
+                      "w-full max-w-6 rounded-t bg-brand group-focus-within:brightness-125 group-hover:brightness-125",
                       day.revenue === 0 && "bg-line",
                     )}
                     style={{ height: `max(${height}%, 2px)` }}
@@ -92,7 +92,7 @@ export function SalesChart({ days }: SalesChartProps) {
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "pointer-events-none invisible absolute bottom-full z-10 mb-1 flex flex-col items-center rounded-lg bg-ink px-2.5 py-1.5 text-center whitespace-nowrap text-surface opacity-0 shadow-lg transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100",
+                    "pointer-events-none invisible absolute bottom-full z-10 mb-1 flex flex-col items-center rounded-lg bg-ink px-2.5 py-1.5 text-center whitespace-nowrap text-surface opacity-0 shadow-lg group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100",
                     index < 2
                       ? "left-0"
                       : index > days.length - 3

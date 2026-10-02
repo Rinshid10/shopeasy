@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { buttonClasses, type ButtonSize } from "@/components/ui/Button";
 import { ShoppingBagIcon } from "@/components/ui/icons";
-import { ensureInCart } from "@/lib/checkout/store";
+import { buyNow, preloadCheckout } from "@/lib/checkout/store";
 import { routes } from "@/lib/routes";
 
 interface BuyNowButtonProps {
@@ -14,7 +15,7 @@ interface BuyNowButtonProps {
   compact?: boolean;
 }
 
-/** Puts the product in the cart and goes straight to the delivery address step. */
+/** Selects the product to buy and goes straight to checkout (the shop has no cart). */
 export function BuyNowButton({
   productSlug,
   productTitle,
@@ -23,15 +24,21 @@ export function BuyNowButton({
 }: BuyNowButtonProps) {
   const router = useRouter();
 
-  function buyNow() {
-    ensureInCart(productSlug);
+  // Get checkout ready in the background: load the visitor's saved details and the page.
+  useEffect(() => {
+    preloadCheckout();
+    router.prefetch(routes.checkoutAddress);
+  }, [router]);
+
+  function startCheckout() {
+    buyNow(productSlug);
     router.push(routes.checkoutAddress);
   }
 
   return (
     <button
       type="button"
-      onClick={buyNow}
+      onClick={startCheckout}
       className={buttonClasses({ variant: "buy", size, fullWidth: true })}
     >
       {!compact && <ShoppingBagIcon className="size-5 shrink-0" />}

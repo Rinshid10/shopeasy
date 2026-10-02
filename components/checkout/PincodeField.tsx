@@ -19,7 +19,7 @@ export function PincodeField({ value, check, error, onChange }: PincodeFieldProp
   const hint =
     check.status === "checking" ? (
       <span className="flex items-center gap-1.5">
-        <span className="size-3 animate-spin rounded-full border-2 border-line border-t-brand" />
+        <span className="size-3 rounded-full border-2 border-line border-t-brand" />
         Checking PIN code…
       </span>
     ) : check.status === "valid" ? (

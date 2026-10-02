@@ -6,7 +6,8 @@ import type { Product } from "@/types";
 
 const DEMO_BRAND = "Demo brand";
 
-export const products: Product[] = [
+// Seed source for supabase/seed.sql; the shop reads products from Supabase.
+export const products: Omit<Product, "extraImageUrls" | "specs">[] = [
   {
     slug: "mens-casual-sneakers",
     title: "Men's Casual Sneakers",

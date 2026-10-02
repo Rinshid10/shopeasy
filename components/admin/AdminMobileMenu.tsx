@@ -39,7 +39,7 @@ export function AdminMobileMenu() {
         aria-controls="admin-mobile-menu"
         aria-label="Open admin menu"
         onClick={() => setIsOpen(true)}
-        className="flex size-10 pressable items-center justify-center rounded-lg text-ink hover:bg-surface-muted"
+        className="flex size-10 items-center justify-center rounded-lg text-ink hover:bg-surface-muted"
       >
         <MenuIcon className="size-6" />
       </button>
@@ -47,7 +47,7 @@ export function AdminMobileMenu() {
         aria-hidden="true"
         onClick={() => setIsOpen(false)}
         className={cn(
-          "fixed inset-0 z-50 bg-ink/40 transition-[opacity,visibility] duration-200",
+          "fixed inset-0 z-50 bg-ink/40",
           isOpen ? "visible opacity-100" : "invisible opacity-0",
         )}
       />
@@ -55,7 +55,7 @@ export function AdminMobileMenu() {
         id="admin-mobile-menu"
         aria-label="Admin"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col gap-6 overflow-y-auto bg-surface p-4 shadow-2xl transition-[translate,visibility] duration-300 ease-out",
+          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col gap-6 overflow-y-auto bg-surface p-4 shadow-2xl",
           isOpen ? "visible translate-x-0" : "invisible -translate-x-full",
         )}
       >
@@ -65,7 +65,7 @@ export function AdminMobileMenu() {
             type="button"
             aria-label="Close admin menu"
             onClick={() => setIsOpen(false)}
-            className="flex size-10 pressable items-center justify-center rounded-lg text-ink hover:bg-surface-muted"
+            className="flex size-10 items-center justify-center rounded-lg text-ink hover:bg-surface-muted"
           >
             <CloseIcon className="size-6" />
           </button>

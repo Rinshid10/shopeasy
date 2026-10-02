@@ -69,7 +69,7 @@ export function ReturnsList({ returns: initialReturns }: ReturnsListProps) {
         <ul className="grid gap-3 md:grid-cols-2">
           {visible.map((item) => (
             <li key={item.id}>
-              <Card className="flex h-full enter-up flex-col gap-3 p-4">
+              <Card className="flex h-full flex-col gap-3 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="font-semibold text-ink">{item.productTitle}</p>

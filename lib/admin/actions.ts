@@ -1,9 +1,16 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 
-import { validateProductForm, type ProductFormValues } from "@/lib/admin/product-form";
+import {
+  MAX_PICTURES,
+  MIN_PICTURES,
+  parseSpecLines,
+  validateProductForm,
+  type ProductFormValues,
+} from "@/lib/admin/product-form";
 import { requireAdmin } from "@/lib/admin/session";
+import { CATALOGUE_TAG } from "@/lib/catalogue-cache";
 import { routes } from "@/lib/routes";
 import type { AdminOrderStatus, Coupon, ReturnStatus, StoreSettings } from "@/types";
 
@@ -19,6 +26,7 @@ function failure(error: { message: string; code?: string }): { ok: false; error:
 
 /** Shop pages are built ahead of time; rebuild them after a catalogue or settings change. */
 function refreshStore() {
+  updateTag(CATALOGUE_TAG);
   revalidatePath("/", "layout");
 }
 
@@ -42,20 +50,29 @@ interface SaveProductInput {
   /** The product being edited; leave out to add a new one. */
   slug?: string;
   values: ProductFormValues;
-  /** A path in the product-images bucket or under public/, or null for no picture. */
-  imagePath: string | null;
+  /**
+   * Picture paths in the product-images bucket (or under public/), main picture first.
+   * At least 1 and at most 4.
+   */
+  imagePaths: string[];
 }
 
 export async function saveProduct({
   slug,
   values,
-  imagePath,
+  imagePaths,
 }: SaveProductInput): Promise<ActionResult<{ slug: string }>> {
   const { supabase } = await requireAdmin();
 
   const errors = validateProductForm(values);
   const firstError = Object.values(errors)[0];
   if (firstError) return { ok: false, error: firstError };
+  if (imagePaths.length < MIN_PICTURES) {
+    return { ok: false, error: "Add at least one picture of the product." };
+  }
+  if (imagePaths.length > MAX_PICTURES) {
+    return { ok: false, error: `Add at most ${MAX_PICTURES} pictures.` };
+  }
 
   const row = {
     title: values.title.trim(),
@@ -70,8 +87,10 @@ export async function saveProduct({
     low_stock_threshold: Number(values.lowStockThreshold),
     pros: lines(values.pros),
     cons: lines(values.cons),
+    specs: parseSpecLines(values.specs),
     status: values.listingStatus,
-    image_path: imagePath,
+    image_path: imagePaths[0],
+    extra_image_paths: imagePaths.slice(1),
   };
 
   if (slug) {

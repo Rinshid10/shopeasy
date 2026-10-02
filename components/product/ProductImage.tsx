@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { ViewTransition } from "react";
 import { cn } from "@/lib/cn";
 import { PLACEHOLDER_IMAGE } from "@/lib/placeholder";
 import type { Product } from "@/types";
@@ -21,16 +20,6 @@ interface ProductImageProps {
    * should skip the picture instead of reading the name twice.
    */
   decorative?: boolean;
-  /**
-   * Pictures with the same name on two pages glide from one position to the other during
-   * navigation. Use getProductImageTransitionName so the card and product page match.
-   */
-  transitionName?: string;
-}
-
-/** The shared name that lets a product's picture glide between its card and its page. */
-export function getProductImageTransitionName(slug: string): string {
-  return `product-image-${slug}`;
 }
 
 const frameClasses: Record<ProductImageShape, string> = {
@@ -40,7 +29,6 @@ const frameClasses: Record<ProductImageShape, string> = {
 
 /**
  * A product picture on a white frame. Products without one show the placeholder instead.
- * Inside a `group` link, the picture zooms slightly on hover.
  */
 export function ProductImage({
   product,
@@ -49,11 +37,10 @@ export function ProductImage({
   preload = false,
   eager = false,
   decorative = false,
-  transitionName,
 }: ProductImageProps) {
   const hasImage = product.imageUrl !== null;
 
-  const frame = (
+  return (
     <div
       className={cn(
         "relative overflow-hidden rounded-xl",
@@ -70,21 +57,8 @@ export function ProductImage({
         sizes={sizes}
         preload={preload}
         loading={eager && !preload ? "eager" : undefined}
-        className={cn(
-          "object-contain transition-transform duration-300 group-hover:scale-105",
-          hasImage ? "p-2" : "p-[22%]",
-        )}
+        className={cn("object-contain", hasImage ? "p-2" : "p-[22%]")}
       />
     </div>
-  );
-
-  if (!transitionName) {
-    return frame;
-  }
-
-  return (
-    <ViewTransition name={transitionName} share="morph" default="none">
-      {frame}
-    </ViewTransition>
   );
 }

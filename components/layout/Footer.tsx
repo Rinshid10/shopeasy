@@ -26,7 +26,7 @@ export async function Footer() {
                 <li key={category.slug}>
                   <Link
                     href={routes.category(category.slug)}
-                    className="inline-block rounded py-1.5 text-sm transition-colors hover:text-surface"
+                    className="inline-block rounded py-1.5 text-sm hover:text-surface"
                   >
                     {category.name}
                   </Link>

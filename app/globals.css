@@ -60,16 +60,8 @@
 
 @layer base {
   :root {
-    /* A quick start that settles gently. Used for entrances and press feedback. */
-    --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
     /* Space taken by a bar fixed to the bottom of the screen, such as the mobile buy bar. */
     --bottom-bar-height: 0px;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    html {
-      scroll-behavior: smooth;
-    }
   }
 
   body {
@@ -121,163 +113,17 @@
   }
 }
 
-/* ---------- Motion ---------- */
+/* ---------- No motion ---------- */
 
-/* Press feedback: the element dips slightly while it is being tapped or clicked. */
-@utility pressable {
-  transition-property: transform, translate, box-shadow, background-color, border-color, color;
-  transition-duration: 150ms;
-  transition-timing-function: var(--ease-out-soft);
-
-  &:active {
-    transform: scale(0.97);
-  }
+/* The shop has no animations or transitions: everything changes at once. This also stops
+   any added later by a component or the browser. */
+*,
+*::before,
+*::after {
+  animation: none !important;
+  transition: none !important;
 }
 
-/*
- * Entrance when a page opens: fades in while rising a little.
- * Stagger several elements by setting --enter-delay on each.
- */
-@utility enter-up {
-  @media (prefers-reduced-motion: no-preference) {
-    animation: enter-up 550ms var(--ease-out-soft) both;
-    animation-delay: var(--enter-delay, 0ms);
-  }
-}
-
-@keyframes enter-up {
-  /* Starts faint rather than invisible: browsers only count content as shown once it is
-     visible at all, and fully hidden starts would delay that by the animation time. */
-  from {
-    opacity: 0.25;
-    translate: 0 1rem;
-  }
-}
-
-/*
- * Reveal on scroll: rises gently into place as the element enters the screen. It does
- * not fade, so text below the fold is always fully readable (and passes contrast checks).
- * Driven by the scroll position in CSS, so it costs no JavaScript. Browsers without
- * scroll-driven animations simply show the element.
- */
-@utility reveal {
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      animation: reveal-up linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 9rem;
-    }
-  }
-}
-
-@keyframes reveal-up {
-  from {
-    translate: 0 2rem;
-    scale: 0.97;
-  }
-}
-
-/* The sticky header gains a shadow once the page has been scrolled. */
-@utility header-elevate {
-  @supports (animation-timeline: scroll()) {
-    animation: header-elevate linear both;
-    animation-timeline: scroll(root);
-    animation-range: 0 5rem;
-  }
-}
-
-@keyframes header-elevate {
-  to {
-    box-shadow: 0 10px 24px -14px rgb(15 23 42 / 0.3);
-  }
-}
-
-/* The back-to-top button appears after about one screen of scrolling. */
-@utility back-to-top {
-  visibility: hidden;
-  opacity: 0;
-
-  @supports (animation-timeline: scroll()) {
-    animation: back-to-top-in linear both;
-    animation-timeline: scroll(root);
-    animation-range: 70vh 100vh;
-  }
-}
-
-@keyframes back-to-top-in {
-  from {
-    visibility: hidden;
-    opacity: 0;
-    translate: 0 0.75rem;
-  }
-
-  to {
-    visibility: visible;
-    opacity: 1;
-  }
-}
-
-/* ---------- Page transitions (View Transitions API) ---------- */
-
-/* Keep the page clickable while a transition plays. */
-::view-transition {
-  pointer-events: none;
-}
-
-/* The old page leaves quickly; the new one fades in while rising a little. */
-::view-transition-old(.page-exit) {
-  animation: 140ms ease-in both vt-fade-out;
-}
-
-::view-transition-new(.page-enter) {
-  animation:
-    240ms ease-out 100ms both vt-fade-in,
-    380ms var(--ease-out-soft) both vt-rise;
-}
-
-/* A product picture glides from its card to the product page and back. */
-::view-transition-group(.morph) {
-  animation-duration: 380ms;
-  animation-timing-function: var(--ease-out-soft);
-}
-
-/* The header stays put while the page underneath changes. */
-::view-transition-group(site-header) {
-  z-index: 100;
-  animation: none;
-}
-
-::view-transition-old(site-header) {
-  display: none;
-}
-
-::view-transition-new(site-header) {
-  animation: none;
-}
-
-@keyframes vt-fade-out {
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes vt-fade-in {
-  from {
-    opacity: 0;
-  }
-}
-
-@keyframes vt-rise {
-  from {
-    translate: 0 0.75rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*),
-  ::view-transition-new(*),
-  ::view-transition-group(*) {
-    animation-duration: 0s !important;
-    animation-delay: 0s !important;
-  }
+html {
+  scroll-behavior: auto;
 }

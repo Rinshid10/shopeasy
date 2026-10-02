@@ -51,9 +51,9 @@ export function UseLocationButton({ onLocated }: UseLocationButtonProps) {
         type="button"
         onClick={useCurrentLocation}
         disabled={isLocating}
-        className="flex min-h-12 pressable items-center justify-center gap-2 rounded-xl border border-dashed border-brand bg-brand-soft px-4 text-sm font-semibold text-brand hover:bg-brand-soft/60 disabled:cursor-wait"
+        className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-dashed border-brand bg-brand-soft px-4 text-sm font-semibold text-brand hover:bg-brand-soft/60 disabled:cursor-wait"
       >
-        <CrosshairIcon className={cn("size-5", isLocating && "animate-spin")} />
+        <CrosshairIcon className={cn("size-5", isLocating && "")} />
         {isLocating ? "Finding your location…" : "Use my current location"}
       </button>
       <p

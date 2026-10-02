@@ -21,7 +21,7 @@ interface InventoryListProps {
 }
 
 const stepClasses =
-  "pressable flex size-9 items-center justify-center text-ink hover:bg-surface-muted disabled:text-ink-soft";
+  " flex size-9 items-center justify-center text-ink hover:bg-surface-muted disabled:text-ink-soft";
 
 /** Stock for every product, with quick + and − adjustments and low/out-of-stock filters. */
 export function InventoryList({ products }: InventoryListProps) {
@@ -116,7 +116,7 @@ export function InventoryList({ products }: InventoryListProps) {
                 <button
                   type="button"
                   onClick={() => adjust(product.slug, 10)}
-                  className="pressable rounded-lg border border-line px-2.5 py-2 text-xs font-semibold text-ink hover:border-brand hover:text-brand"
+                  className="rounded-lg border border-line px-2.5 py-2 text-xs font-semibold text-ink hover:border-brand hover:text-brand"
                 >
                   +10
                 </button>

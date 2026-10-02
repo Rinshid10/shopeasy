@@ -1,5 +1,6 @@
 import { supabaseUrl } from "@/lib/supabase/env";
-import type { Category, CategoryTint, Product } from "@/types";
+import type { Category, CategoryTint, Product, ProductSpec } from "@/types";
+import type { Json } from "@/types/supabase";
 import type { Tables } from "@/types/supabase";
 
 export const PRODUCT_IMAGES_BUCKET = "product-images";
@@ -12,6 +13,20 @@ export function getImageUrl(imagePath: string | null): string | null {
   if (!imagePath) return null;
   if (imagePath.startsWith("/") || imagePath.startsWith("http")) return imagePath;
   return `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${imagePath}`;
+}
+
+/** Reads stored product details, skipping anything that isn't a { label, value } pair. */
+export function toSpecs(value: Json): ProductSpec[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) =>
+    item &&
+    typeof item === "object" &&
+    !Array.isArray(item) &&
+    typeof item.label === "string" &&
+    typeof item.value === "string"
+      ? [{ label: item.label, value: item.value }]
+      : [],
+  );
 }
 
 export function toProduct(row: Tables<"products">): Product {
@@ -27,6 +42,8 @@ export function toProduct(row: Tables<"products">): Product {
     rating: row.rating ?? undefined,
     ratingCount: row.rating_count ?? undefined,
     imageUrl: getImageUrl(row.image_path),
+    extraImageUrls: row.extra_image_paths.flatMap((path) => getImageUrl(path) ?? []),
+    specs: toSpecs(row.specs),
     pros: row.pros,
     cons: row.cons,
     isTopPick: row.is_top_pick,

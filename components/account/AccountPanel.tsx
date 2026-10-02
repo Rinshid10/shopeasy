@@ -9,37 +9,30 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
 import { UserIcon } from "@/components/ui/icons";
-import {
-  formatMobile,
-  hasAccount,
-  sendLoginCode,
-  signOut,
-  verifyLoginCode,
-} from "@/lib/auth/customer-auth";
-import { useAuthUser } from "@/lib/auth/use-auth-user";
-import { PHONE_PATTERN } from "@/lib/checkout/address";
+import { continueAsGuest, sendLoginCode, signOut, verifyLoginCode } from "@/lib/auth/customer-auth";
+import { useCustomer } from "@/lib/auth/use-customer";
 import { routes } from "@/lib/routes";
 
-const CODE_PATTERN = /^\d{6}$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** Supabase codes are 6 digits by default; the project can set up to 10. */
+const CODE_PATTERN = /^\d{6,10}$/;
 /** Seconds before another code can be sent. */
-const RESEND_WAIT = 30;
-
-function digitsOnly(value: string, maxLength: number): string {
-  return value.replace(/\D/g, "").slice(0, maxLength);
-}
+const RESEND_WAIT = 60;
 
 interface AccountPanelProps {
   /** Where to go after logging in, e.g. back to checkout. */
   returnTo?: string;
 }
 
-/** Log in with mobile number and SMS code (needed to buy), or see who is logged in. */
+/** Log in with name, email and an emailed code (needed to buy), or see who is logged in. */
 export function AccountPanel({ returnTo }: AccountPanelProps) {
   const router = useRouter();
-  const { isLoaded, user } = useAuthUser();
-  const [mobile, setMobile] = useState("");
+  const customer = useCustomer();
+  const [isChangingDetails, setIsChangingDetails] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
-  const [step, setStep] = useState<"mobile" | "code">("mobile");
+  const [step, setStep] = useState<"details" | "code">("details");
   const [resendIn, setResendIn] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -50,17 +43,46 @@ export function AccountPanel({ returnTo }: AccountPanelProps) {
     return () => clearTimeout(timer);
   }, [resendIn]);
 
-  if (!isLoaded) {
+  if (customer.status === "loading") {
     return <CheckoutLoading />;
   }
 
-  if (hasAccount(user)) {
+  if (customer.status === "guest" && !isChangingDetails) {
     return (
-      <Container width="narrow" className="flex enter-up flex-col gap-5 py-8 sm:py-12">
-        <AccountHeading title="My Account" />
+      <Container width="narrow" className="flex flex-col gap-5 py-8 sm:py-12">
+        <AccountHeading title={`Hi, ${customer.fullName}`} />
         <Card className="flex flex-col gap-4 p-4 sm:p-6">
           <p className="text-ink-muted">
-            Logged in as <span className="font-semibold text-ink">{formatMobile(user?.phone)}</span>
+            Shopping as a guest with{" "}
+            <span className="font-semibold text-ink">{customer.email}</span>. Your orders are saved
+            on this device.
+          </p>
+          <ButtonLink href={returnTo ?? routes.orders} variant="buy" size="lg">
+            {returnTo ? "Continue to Checkout" : "My Orders"}
+          </ButtonLink>
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => {
+              setFullName(customer.fullName);
+              setEmail(customer.email);
+              setIsChangingDetails(true);
+            }}
+          >
+            Change details
+          </Button>
+        </Card>
+      </Container>
+    );
+  }
+
+  if (customer.status === "account") {
+    return (
+      <Container width="narrow" className="flex flex-col gap-5 py-8 sm:py-12">
+        <AccountHeading title={customer.fullName ? `Hi, ${customer.fullName}` : "My Account"} />
+        <Card className="flex flex-col gap-4 p-4 sm:p-6">
+          <p className="text-ink-muted">
+            Logged in as <span className="font-semibold text-ink">{customer.email}</span>
           </p>
           <ButtonLink href={returnTo ?? routes.orders} variant="buy" size="lg">
             {returnTo ? "Continue to Checkout" : "My Orders"}
@@ -85,40 +107,48 @@ export function AccountPanel({ returnTo }: AccountPanelProps) {
     );
   }
 
-  async function sendCode() {
+  /** Emails a code; if email can't be sent right now, checks the email and continues as guest. */
+  async function sendCode(name: string, address: string) {
     setIsBusy(true);
     setError(undefined);
     try {
-      await sendLoginCode(mobile);
-      setCode("");
-      setStep("code");
-      setResendIn(RESEND_WAIT);
+      if ((await sendLoginCode(name, address)) === "code-sent") {
+        setCode("");
+        setStep("code");
+        setResendIn(RESEND_WAIT);
+        setIsBusy(false);
+        return;
+      }
+      await continueAsGuest(name, address);
+      router.replace(returnTo ?? routes.orders);
     } catch (sendError) {
       setError(sendError instanceof Error ? sendError.message : "Couldn't send the code.");
-    } finally {
       setIsBusy(false);
     }
   }
 
-  function submitMobile(event: FormEvent<HTMLFormElement>) {
+  function submitDetails(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!PHONE_PATTERN.test(mobile)) {
-      setError("Enter a valid 10-digit mobile number.");
-      return;
+    const cleanEmail = email.trim().toLowerCase();
+    if (fullName.trim().length < 2) {
+      return setError("Enter your name.");
     }
-    void sendCode();
+    if (!EMAIL_PATTERN.test(cleanEmail)) {
+      return setError("Enter a valid email address.");
+    }
+    setEmail(cleanEmail);
+    void sendCode(fullName.trim(), cleanEmail);
   }
 
   async function submitCode(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!CODE_PATTERN.test(code)) {
-      setError("Enter the 6-digit code from the SMS.");
-      return;
+      return setError("Enter the code from the email.");
     }
     setIsBusy(true);
     setError(undefined);
     try {
-      await verifyLoginCode(mobile, code);
+      await verifyLoginCode(fullName.trim(), email, code);
       router.replace(returnTo ?? routes.orders);
     } catch (verifyError) {
       setError(verifyError instanceof Error ? verifyError.message : "Couldn't check the code.");
@@ -127,65 +157,67 @@ export function AccountPanel({ returnTo }: AccountPanelProps) {
   }
 
   return (
-    <Container width="narrow" className="flex enter-up flex-col gap-5 py-8 sm:py-12">
+    <Container width="narrow" className="flex flex-col gap-5 py-8 sm:py-12">
       <AccountHeading
         title="Log in or Sign up"
         text={
           returnTo
-            ? "Please log in with your mobile number to buy. Your cart is saved."
-            : "Use your mobile number to buy and to see your orders on any device."
+            ? "Enter your name and email to buy. Your item is saved."
+            : "Enter your name and email to buy and to see your orders on any device."
         }
       />
       <Card className="flex flex-col gap-4 p-4 sm:p-6">
-        {step === "mobile" ? (
-          <form noValidate onSubmit={submitMobile} className="flex flex-col gap-4">
+        {step === "details" ? (
+          <form noValidate onSubmit={submitDetails} className="flex flex-col gap-4">
+            <FormField id="account-name" label="Full name">
+              <TextInput
+                id="account-name"
+                autoComplete="name"
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
+              />
+            </FormField>
             <FormField
-              id="login-mobile"
-              label="Mobile number"
+              id="account-email"
+              label="Email address"
               error={error}
-              hint="We'll send a 6-digit code by SMS."
+              hint="We'll email you a code to confirm it's you."
             >
-              <div className="flex gap-2">
-                <span className="flex h-12 items-center rounded-xl border border-line bg-surface-muted px-3 font-semibold text-ink">
-                  +91
-                </span>
-                <TextInput
-                  id="login-mobile"
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="tel-national"
-                  placeholder="10-digit mobile number"
-                  value={mobile}
-                  error={error}
-                  onChange={(event) => setMobile(digitsOnly(event.target.value, 10))}
-                />
-              </div>
+              <TextInput
+                id="account-email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+                error={error}
+                onChange={(event) => setEmail(event.target.value)}
+              />
             </FormField>
             <Button type="submit" variant="buy" size="lg" fullWidth disabled={isBusy}>
-              {isBusy ? "Sending code…" : "Send Code"}
+              {isBusy ? "Sending code…" : "Continue"}
             </Button>
           </form>
         ) : (
           <form noValidate onSubmit={submitCode} className="flex flex-col gap-4">
             <FormField
-              id="login-code"
-              label="Enter the 6-digit code"
+              id="account-code"
+              label="Enter the code"
               error={error}
               hint={
                 <>
-                  Sent by SMS to{" "}
-                  <span className="font-semibold text-ink">{formatMobile(mobile)}</span>
+                  Sent to <span className="font-semibold text-ink">{email}</span>. Check spam if it
+                  isn&apos;t there.
                 </>
               }
             >
               <TextInput
-                id="login-code"
+                id="account-code"
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 placeholder="123456"
                 value={code}
                 error={error}
-                onChange={(event) => setCode(digitsOnly(event.target.value, 6))}
+                onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, 10))}
               />
             </FormField>
             <Button type="submit" variant="buy" size="lg" fullWidth disabled={isBusy}>
@@ -196,17 +228,17 @@ export function AccountPanel({ returnTo }: AccountPanelProps) {
                 type="button"
                 disabled={isBusy}
                 onClick={() => {
-                  setStep("mobile");
+                  setStep("details");
                   setError(undefined);
                 }}
                 className="font-semibold text-brand hover:underline disabled:opacity-60"
               >
-                Change number
+                Change email
               </button>
               <button
                 type="button"
                 disabled={isBusy || resendIn > 0}
-                onClick={() => void sendCode()}
+                onClick={() => void sendCode(fullName.trim(), email)}
                 className="font-semibold text-brand hover:underline disabled:text-ink-muted disabled:no-underline"
               >
                 {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}

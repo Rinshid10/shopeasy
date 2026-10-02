@@ -52,12 +52,12 @@ export function SearchForm() {
         placeholder="Search for products, brands and more..."
         autoComplete="off"
         onInput={updateResultsLive}
-        className="h-11 w-full rounded-full border border-transparent bg-surface-muted pr-4 pl-12 text-base text-ink transition-colors duration-200 placeholder:text-ink-muted focus:border-brand focus:bg-surface md:h-12 md:text-sm"
+        className="h-11 w-full rounded-full border border-transparent bg-surface-muted pr-4 pl-12 text-base text-ink placeholder:text-ink-muted focus:border-brand focus:bg-surface md:h-12 md:text-sm"
       />
       <button
         type="submit"
         aria-label="Search"
-        className="absolute top-1 left-1.5 flex size-9 pressable items-center justify-center rounded-full text-ink-muted hover:text-ink md:top-1.5"
+        className="absolute top-1 left-1.5 flex size-9 items-center justify-center rounded-full text-ink-muted hover:text-ink md:top-1.5"
       >
         <SearchIcon />
       </button>

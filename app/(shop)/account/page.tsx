@@ -4,7 +4,7 @@ import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata = buildPageMetadata({
   title: "Log in",
-  description: "Log in with your mobile number to buy and to see your orders.",
+  description: "Log in with your name and email to buy and to see your orders.",
   path: routes.account,
   noIndex: true,
 });

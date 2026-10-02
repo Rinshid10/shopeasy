@@ -28,12 +28,18 @@ import type { Tables } from "@/types/supabase";
 /** A catalogue product together with the stock and listing details the store keeps. */
 export interface AdminProduct extends Product {
   inventory: ProductInventory;
-  /** The stored picture path (in the product-images bucket, or under public/), if any. */
-  imagePath: string | null;
+  /**
+   * Stored picture paths (in the product-images bucket, or under public/), main one first.
+   * Up to 4.
+   */
+  imagePaths: string[];
 }
 
 /** A customer together with totals from their orders. */
 export interface CustomerSummary extends Customer {
+  email: string | null;
+  /** "account": logged in with an emailed code. "guest": gave name and email at checkout. */
+  kind: "account" | "guest";
   orderCount: number;
   totalSpent: number;
   /** ISO date-time of their latest order, if any. */
@@ -57,6 +63,8 @@ function toAdminOrder(row: OrderRow): AdminOrder {
     placedAt: row.placed_at,
     status: row.status as AdminOrderStatus,
     customerId: row.user_id,
+    customerName: row.customer_name,
+    customerEmail: row.customer_email,
     address: row.address as unknown as Address,
     lines: [...row.order_items]
       .sort((a, b) => a.id - b.id)
@@ -80,7 +88,9 @@ function toAdminOrder(row: OrderRow): AdminOrder {
 function toAdminProduct(row: Tables<"products">): AdminProduct {
   return {
     ...toProduct(row),
-    imagePath: row.image_path,
+    imagePaths: [row.image_path, ...row.extra_image_paths].filter((path): path is string =>
+      Boolean(path),
+    ),
     inventory: {
       productSlug: row.slug,
       sku: row.sku,
@@ -126,35 +136,57 @@ export async function getAdminProduct(slug: string): Promise<AdminProduct | unde
   return row ? toAdminProduct(row) : undefined;
 }
 
-/** Customers are the shoppers who have ordered, described by their latest delivery address. */
+/**
+ * Everyone who has signed up (logged in with an emailed code) or given their name and email
+ * as a guest, plus anyone who has ordered. Plain browsers who never gave details, and the
+ * admin, are left out. Buyers come first, by spend; then the newest sign-ups.
+ */
 export async function getCustomers(): Promise<CustomerSummary[]> {
-  const orders = await getAdminOrders();
-  const byCustomer = new Map<string, AdminOrder[]>();
+  const { supabase, email: adminEmail } = await requireAdmin();
+  const [profiles, orders] = await Promise.all([
+    supabase.from("profiles").select("id, full_name, email, contact_email, phone, created_at"),
+    getAdminOrders(),
+  ]);
+  const profileRows = unwrap(profiles);
+
+  const ordersByCustomer = new Map<string, AdminOrder[]>();
   for (const order of orders) {
-    byCustomer.set(order.customerId, [...(byCustomer.get(order.customerId) ?? []), order]);
+    ordersByCustomer.set(order.customerId, [
+      ...(ordersByCustomer.get(order.customerId) ?? []),
+      order,
+    ]);
   }
 
-  return [...byCustomer.entries()]
-    .map(([id, customerOrders]) => {
-      // Orders are newest first.
+  return profileRows
+    .flatMap((profile): CustomerSummary[] => {
+      const customerOrders = ordersByCustomer.get(profile.id) ?? [];
+      const email = profile.email ?? profile.contact_email;
+      const isAdmin = Boolean(adminEmail) && profile.email === adminEmail;
+      if (isAdmin || (!email && customerOrders.length === 0)) return [];
+
+      // Orders are newest first; the latest delivery address fills in name, phone and city.
       const latest = customerOrders[0];
       const counted = customerOrders.filter((order) => order.status !== "cancelled");
-      return {
-        id,
-        name: latest.address.fullName,
-        phone: latest.address.phone,
-        city: latest.address.city,
-        state: latest.address.state,
-        joinedAt: customerOrders[customerOrders.length - 1].placedAt,
-        orderCount: counted.length,
-        totalSpent: counted.reduce((sum, order) => sum + order.total, 0),
-        lastOrderAt: latest.placedAt,
-      };
+      return [
+        {
+          id: profile.id,
+          name: profile.full_name || latest?.customerName || latest?.address.fullName || "—",
+          email,
+          kind: profile.email ? "account" : "guest",
+          phone: latest?.address.phone ?? profile.phone,
+          city: latest?.address.city ?? "",
+          state: latest?.address.state ?? "",
+          joinedAt: profile.created_at,
+          orderCount: counted.length,
+          totalSpent: counted.reduce((sum, order) => sum + order.total, 0),
+          lastOrderAt: latest?.placedAt,
+        },
+      ];
     })
-    .sort((a, b) => b.totalSpent - a.totalSpent);
+    .sort((a, b) => b.totalSpent - a.totalSpent || b.joinedAt.localeCompare(a.joinedAt));
 }
 
-export async function getCustomer(id: string): Promise<Customer | undefined> {
+export async function getCustomer(id: string): Promise<CustomerSummary | undefined> {
   return (await getCustomers()).find((customer) => customer.id === id);
 }
 

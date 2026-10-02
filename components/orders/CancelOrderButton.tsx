@@ -37,7 +37,7 @@ export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
     <div
       role="group"
       aria-labelledby="cancel-order-question"
-      className="flex enter-up flex-col gap-3 rounded-2xl border border-negative/30 bg-surface p-4"
+      className="flex flex-col gap-3 rounded-2xl border border-negative/30 bg-surface p-4"
     >
       <p id="cancel-order-question" className="text-sm font-semibold text-ink">
         Cancel this order? This can&apos;t be undone.

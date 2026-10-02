@@ -1,3 +1,9 @@
+/** One row of a product's details table, e.g. { label: "Color", value: "Blue" }. */
+export interface ProductSpec {
+  label: string;
+  value: string;
+}
+
 export interface Product {
   slug: string;
   title: string;
@@ -18,6 +24,10 @@ export interface Product {
   ratingCount?: number;
   /** The product picture: a remote URL, a path under /public, or null to show the placeholder. */
   imageUrl: string | null;
+  /** Up to 3 more pictures, shown as thumbnails on the product page. */
+  extraImageUrls: string[];
+  /** Details such as Color or Material, shown as a table on the product page. */
+  specs: ProductSpec[];
   pros: string[];
   cons: string[];
   isTopPick: boolean;

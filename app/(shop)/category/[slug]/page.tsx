@@ -4,7 +4,6 @@ import { SortableProductGrid } from "@/components/product/SortableProductGrid";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
-import { PageTransition } from "@/components/ui/PageTransition";
 import { getCategories, getCategoryBySlug } from "@/lib/categories";
 import { getProductsByCategory } from "@/lib/products";
 import { routes } from "@/lib/routes";
@@ -47,7 +46,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   ];
 
   return (
-    <PageTransition>
+    <>
       <Container className="flex flex-col gap-5 py-6 sm:gap-6 sm:py-8">
         <JsonLd data={breadcrumbJsonLd(breadcrumbs, routes.category(category.slug))} />
         <Breadcrumbs items={breadcrumbs} />
@@ -66,6 +65,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </p>
         )}
       </Container>
-    </PageTransition>
+    </>
   );
 }

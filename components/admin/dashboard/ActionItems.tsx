@@ -38,7 +38,7 @@ export function ActionItems({ items }: ActionItemsProps) {
             <Link
               href={item.href}
               className={cn(
-                "group flex h-full pressable items-center gap-3 rounded-2xl border p-3 hover:shadow-md sm:p-4",
+                "group flex h-full items-center gap-3 rounded-2xl border p-3 hover:shadow-md sm:p-4",
                 isClear ? "border-line bg-surface" : "border-warning/30 bg-warning-soft",
               )}
             >
@@ -54,7 +54,7 @@ export function ActionItems({ items }: ActionItemsProps) {
                 <span className="text-xl font-extrabold text-ink tabular-nums">{item.count}</span>
                 <span className="text-xs font-medium text-ink-muted">{item.label}</span>
               </span>
-              <ChevronRightIcon className="size-4 shrink-0 text-ink-muted transition-transform group-hover:translate-x-0.5" />
+              <ChevronRightIcon className="size-4 shrink-0 text-ink-muted group-hover:translate-x-0.5" />
             </Link>
           </li>
         );

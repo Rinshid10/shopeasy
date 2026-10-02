@@ -6,7 +6,6 @@ import { ProductCarousel } from "@/components/product/ProductCarousel";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
-import { PageTransition } from "@/components/ui/PageTransition";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getCategories } from "@/lib/categories";
 import { getDiscountPercent } from "@/lib/format";
@@ -39,7 +38,7 @@ export default async function HomePage() {
   const maxDiscountPercent = topDeal ? (getDiscountPercent(topDeal.price, topDeal.mrp) ?? 0) : 0;
 
   return (
-    <PageTransition>
+    <>
       <JsonLd data={organizationJsonLd()} />
       <JsonLd data={websiteJsonLd()} />
       <Hero topPicksId={TOP_PICKS_ID} />
@@ -47,7 +46,7 @@ export default async function HomePage() {
         <section
           id={CATEGORIES_ID}
           aria-labelledby="categories-heading"
-          className={`reveal ${SECTION_SCROLL_MARGIN}`}
+          className={`${SECTION_SCROLL_MARGIN}`}
         >
           <SectionHeading
             id="categories-heading"
@@ -58,7 +57,7 @@ export default async function HomePage() {
         </section>
 
         {maxDiscountPercent > 0 && (
-          <section aria-labelledby="offers-heading" className="reveal">
+          <section aria-labelledby="offers-heading" className="">
             <h2 id="offers-heading" className="sr-only">
               Offers
             </h2>
@@ -74,7 +73,7 @@ export default async function HomePage() {
           <section
             id={DEALS_ID}
             aria-labelledby="deals-heading"
-            className={`reveal ${SECTION_SCROLL_MARGIN}`}
+            className={`${SECTION_SCROLL_MARGIN}`}
           >
             <SectionHeading
               id="deals-heading"
@@ -83,11 +82,11 @@ export default async function HomePage() {
               action={{ label: "View all", href: routes.search }}
             />
             {/* These products also appear under Top picks, so only that grid's pictures glide. */}
-            <ProductCarousel products={deals} label="Biggest discounts" morph={false} />
+            <ProductCarousel products={deals} label="Biggest discounts" />
           </section>
         )}
 
-        <section aria-labelledby="price-heading" className="reveal">
+        <section aria-labelledby="price-heading" className="">
           <SectionHeading
             id="price-heading"
             title="Shop by price"
@@ -109,6 +108,6 @@ export default async function HomePage() {
           <ProductGrid products={topPicks} />
         </section>
       </Container>
-    </PageTransition>
+    </>
   );
 }

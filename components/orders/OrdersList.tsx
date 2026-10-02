@@ -21,10 +21,7 @@ export function OrdersList() {
 
   if (orders.length === 0) {
     return (
-      <Container
-        width="narrow"
-        className="flex enter-up flex-col items-center gap-4 py-16 text-center"
-      >
+      <Container width="narrow" className="flex flex-col items-center gap-4 py-16 text-center">
         <span className="flex size-20 items-center justify-center rounded-full bg-brand-soft text-brand">
           <PackageIcon className="size-10" />
         </span>

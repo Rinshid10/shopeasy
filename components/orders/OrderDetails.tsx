@@ -54,11 +54,11 @@ export function OrderDetails() {
           My Orders
         </Link>
       </nav>
-      <header className="enter-up">
+      <header className="">
         <h1 className="text-2xl font-extrabold tracking-tight text-ink">Order {order.id}</h1>
         <p className="mt-1 text-sm text-ink-muted">Placed on {formatDateTime(order.placedAt)}</p>
       </header>
-      <div className="grid enter-up items-start gap-4 [--enter-delay:100ms] md:grid-cols-[1fr_20rem]">
+      <div className="grid items-start gap-4 md:grid-cols-[1fr_20rem]">
         <div className="flex flex-col gap-4">
           <Card className="flex flex-col gap-4 p-4 sm:p-5">
             <h2 className={cn("font-bold", isCancelled ? "text-negative" : "text-positive")}>

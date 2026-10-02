@@ -36,7 +36,7 @@ export function FormField({ id, label, error, hint, children }: FormFieldProps) 
 /** Shared look for text inputs and selects; red border when there is an error. */
 export function fieldControlClasses(hasError: boolean): string {
   return cn(
-    "h-12 w-full rounded-xl border bg-surface px-3.5 text-base text-ink transition-colors placeholder:text-ink-soft focus:border-brand",
+    "h-12 w-full rounded-xl border bg-surface px-3.5 text-base text-ink  placeholder:text-ink-soft focus:border-brand",
     hasError ? "border-negative" : "border-line",
   );
 }

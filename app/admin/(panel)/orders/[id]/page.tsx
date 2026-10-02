@@ -58,10 +58,28 @@ export default async function AdminOrderPage({ params }: AdminOrderPageProps) {
             </div>
           </AdminCard>
           <AdminCard title="Customer">
+            {(order.customerName || order.customerEmail) && (
+              <p className="text-sm text-ink">
+                <span className="font-semibold">{order.customerName}</span>
+                {order.customerEmail && (
+                  <>
+                    {" · "}
+                    <a
+                      href={`mailto:${order.customerEmail}`}
+                      className="text-brand hover:underline"
+                    >
+                      {order.customerEmail}
+                    </a>
+                  </>
+                )}
+              </p>
+            )}
             <AddressCard address={order.address} />
             {customer && (
               <p className="text-sm text-ink-muted">
-                Customer ID {customer.id} · first ordered {formatDateTime(customer.joinedAt)}
+                {customer.kind === "account" ? "Logged-in customer" : "Guest"} · joined{" "}
+                {formatDateTime(customer.joinedAt)} · {customer.orderCount}{" "}
+                {customer.orderCount === 1 ? "order" : "orders"}
               </p>
             )}
           </AdminCard>
