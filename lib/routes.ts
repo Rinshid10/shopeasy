@@ -2,6 +2,8 @@ export const routes = {
   home: "/",
   /** The "Shop by Category" section of the home page. */
   allCategories: "/#categories",
+  /** Every category, as a page of its own (the phone's Categories tab). */
+  categories: "/categories",
   search: "/search",
   /** Products at or below a price, e.g. "Under ₹499". */
   searchUnder: (maxPrice: number) => `/search?maxPrice=${maxPrice}`,
@@ -13,6 +15,7 @@ export const routes = {
   orderSuccess: "/checkout/success",
   orders: "/orders",
   orderDetails: (orderId: string) => `/orders/details?id=${encodeURIComponent(orderId)}`,
+  wishlist: "/wishlist",
   account: "/account",
   /** The log in / register page, returning to `next` afterwards. */
   login: (next: string) => `/account?next=${encodeURIComponent(next)}`,

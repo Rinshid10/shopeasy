@@ -6,10 +6,26 @@ import { buttonClasses, type ButtonSize } from "@/components/ui/Button";
 import { ShoppingBagIcon } from "@/components/ui/icons";
 import { buyNow, preloadCheckout } from "@/lib/checkout/store";
 import { routes } from "@/lib/routes";
+import {
+  requestOptions,
+  SELECT_OPTIONS_ID,
+  useSelectedOptions,
+  useSelectedQuantity,
+} from "@/lib/option-selection";
+import type { ProductOption } from "@/lib/product-options";
+
+const NO_OPTIONS: readonly ProductOption[] = [];
 
 interface BuyNowButtonProps {
   productSlug: string;
   productTitle: string;
+  /** The options the shopper must pick before buying (Size, Color, …). */
+  options?: readonly ProductOption[];
+  /**
+   * True on the product page, where options are picked. Elsewhere (product cards), a
+   * product with options opens its page to pick them.
+   */
+  onProductPage?: boolean;
   size?: ButtonSize;
   /** Short "Buy" label with no icon, for product cards in a grid. */
   compact?: boolean;
@@ -19,10 +35,14 @@ interface BuyNowButtonProps {
 export function BuyNowButton({
   productSlug,
   productTitle,
+  options = NO_OPTIONS,
+  onProductPage = false,
   size = "md",
   compact = false,
 }: BuyNowButtonProps) {
   const router = useRouter();
+  const { selected, missing } = useSelectedOptions(productSlug, options);
+  const quantity = useSelectedQuantity(productSlug);
 
   // Get checkout ready in the background: load the visitor's saved details and the page.
   useEffect(() => {
@@ -31,7 +51,12 @@ export function BuyNowButton({
   }, [router]);
 
   function startCheckout() {
-    buyNow(productSlug);
+    if (missing.length > 0) {
+      if (onProductPage) requestOptions(productSlug);
+      else router.push(`${routes.product(productSlug)}#${SELECT_OPTIONS_ID}`);
+      return;
+    }
+    buyNow(productSlug, selected, onProductPage ? quantity : 1);
     router.push(routes.checkoutAddress);
   }
 

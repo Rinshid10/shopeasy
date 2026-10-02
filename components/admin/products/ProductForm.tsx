@@ -123,7 +123,11 @@ export function ProductForm({ product, categories }: ProductFormProps) {
   }
 
   return (
-    <form noValidate onSubmit={submit} className="grid items-start gap-5 lg:grid-cols-[1fr_20rem]">
+    <form
+      noValidate
+      onSubmit={submit}
+      className="grid items-start gap-5 max-lg:pb-24 lg:grid-cols-[1fr_20rem]"
+    >
       <div className="flex flex-col gap-5">
         <MeeshoPasteCard categories={categories} onFill={fillFromMeesho} />
         <ProductFormFields
@@ -205,10 +209,13 @@ export function ProductForm({ product, categories }: ProductFormProps) {
             />
           </AdminCard>
         </div>
-        <Button type="submit" variant="buy" size="lg" fullWidth disabled={isSaving}>
-          {product ? "Save changes" : "Add product"}
-        </Button>
-        <SaveStatus state={saveState} />
+        {/* On phones the button stays at the bottom of the screen, above the tab bar. */}
+        <div className="flex flex-col gap-3 max-lg:fixed max-lg:inset-x-0 max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))] max-lg:z-30 max-lg:border-t max-lg:border-line max-lg:bg-surface max-lg:px-4 max-lg:py-3 sm:max-lg:px-6">
+          <Button type="submit" variant="buy" size="lg" fullWidth disabled={isSaving}>
+            {product ? "Save changes" : "Add product"}
+          </Button>
+          <SaveStatus state={saveState} />
+        </div>
         {product && <DeleteProductButton slug={product.slug} title={product.title} />}
       </div>
     </form>

@@ -57,7 +57,7 @@ export function OfferBanners({ maxDiscountPercent, dealsHref, shopHref }: OfferB
   const banners = allBanners.filter((banner): banner is OfferBanner => banner !== false);
 
   return (
-    <ul className="-mx-4 scrollbar-none flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 sm:-mx-6 sm:scroll-px-6 sm:px-6 md:mx-0 md:grid md:auto-cols-fr md:grid-flow-col md:gap-4 md:overflow-visible md:px-0">
+    <ul className="relative -mx-4 scrollbar-none flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 sm:-mx-6 sm:scroll-px-6 sm:px-6 md:mx-0 md:grid md:auto-cols-fr md:grid-flow-col md:gap-4 md:overflow-visible md:px-0">
       {banners.map((banner) => (
         <li key={banner.title} className="w-[85%] shrink-0 snap-start sm:w-[60%] md:w-auto">
           <Link

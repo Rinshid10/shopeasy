@@ -84,14 +84,16 @@ export function ProductFormFields({
       </AdminCard>
       <AdminCard
         title="Product details"
-        description='One per line, like "Color: Blue". Shown as a table on the product page.'
+        description='One per line, like "Material: Cotton". Shown on the product page. Customers must choose one value before buying for Size, Shoe Size and Waist Size, and for Color, Age Group, Pack Size, Weight, Volume, Storage, Model, Shade, Flavour or Fragrance when they list several, like "Color: Black, White".'
       >
         <FormField id="product-specs" label="Details (optional)">
           <textarea
             id="product-specs"
             rows={6}
             value={values.specs}
-            placeholder={"Color: Blue\nMaterial: Vinyl\nCountry of Origin: India"}
+            placeholder={
+              "Sizes: S, M, L, XL\nColor: Black, White\nMaterial: Cotton\nCountry of Origin: India"
+            }
             onChange={(event) => onChange("specs", event.target.value)}
             className={textareaClasses(false)}
           />

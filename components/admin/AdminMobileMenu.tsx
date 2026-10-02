@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { AdminBrand } from "@/components/admin/AdminBrand";
 import { AdminNavList } from "@/components/admin/AdminNavList";
-import { CloseIcon, MenuIcon } from "@/components/ui/icons";
+import { CloseIcon, MoreIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 
-/** The phone menu: a panel that slides in from the left over a dimmed screen. */
+/** The phone tab bar's "More" tab: opens a panel with every admin section over a dimmed screen. */
 export function AdminMobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -31,17 +31,20 @@ export function AdminMobileMenu() {
   }, [isOpen]);
 
   return (
-    <div className="lg:hidden">
+    <>
       <button
         ref={toggleRef}
         type="button"
         aria-expanded={isOpen}
         aria-controls="admin-mobile-menu"
-        aria-label="Open admin menu"
         onClick={() => setIsOpen(true)}
-        className="flex size-10 items-center justify-center rounded-lg text-ink hover:bg-surface-muted"
+        className={cn(
+          "flex h-16 w-full flex-col items-center justify-center gap-1 text-[0.6875rem] font-semibold",
+          isOpen ? "text-brand" : "text-ink-muted",
+        )}
       >
-        <MenuIcon className="size-6" />
+        <MoreIcon className="size-6" />
+        More
       </button>
       <div
         aria-hidden="true"
@@ -72,6 +75,6 @@ export function AdminMobileMenu() {
         </div>
         <AdminNavList onNavigate={() => setIsOpen(false)} />
       </nav>
-    </div>
+    </>
   );
 }

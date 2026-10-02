@@ -2,6 +2,7 @@ import "server-only";
 
 import type { PostgrestSingleResponse } from "@supabase/supabase-js";
 import { requireAdmin } from "@/lib/admin/session";
+import { toSelectedOptions } from "@/lib/product-options";
 import { getImageUrl, toProduct } from "@/lib/supabase/mappers";
 import type {
   Address,
@@ -74,6 +75,7 @@ function toAdminOrder(row: OrderRow): AdminOrder {
         imageUrl: getImageUrl(item.image_path),
         price: item.price,
         quantity: item.quantity,
+        options: toSelectedOptions(item.options),
       })),
     deliveryCharge: row.delivery_charge,
     total: row.total,

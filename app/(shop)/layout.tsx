@@ -1,8 +1,9 @@
 import { BackToTop } from "@/components/layout/BackToTop";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { MobileTabBar } from "@/components/layout/MobileTabBar";
 
-/** The storefront: header, page content and footer. */
+/** The storefront: header, page content and footer; on phones, a bottom tab bar instead of the footer. */
 export default function ShopLayout({ children }: LayoutProps<"/">) {
   return (
     <>
@@ -17,8 +18,11 @@ export default function ShopLayout({ children }: LayoutProps<"/">) {
       <main id="main-content" className="min-h-dvh flex-1">
         {children}
       </main>
-      <Footer />
-      <BackToTop />
+      <div className="max-md:hidden">
+        <Footer />
+        <BackToTop />
+      </div>
+      <MobileTabBar />
     </>
   );
 }

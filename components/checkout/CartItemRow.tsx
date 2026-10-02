@@ -6,6 +6,7 @@ import { ProductPrice } from "@/components/product/ProductPrice";
 import { MinusIcon, PlusIcon } from "@/components/ui/icons";
 import type { CartLine } from "@/lib/checkout/pricing";
 import { setCartQuantity } from "@/lib/checkout/store";
+import { formatOptions } from "@/lib/product-options";
 import { routes } from "@/lib/routes";
 import { siteConfig } from "@/lib/site-config";
 
@@ -18,7 +19,7 @@ const stepperButtonClasses =
 
 /** The product being bought, with a quantity stepper. */
 export function CartItemRow({ line }: CartItemRowProps) {
-  const { product, quantity } = line;
+  const { product, quantity, options } = line;
   const maxQuantity = siteConfig.store.maxQuantityPerItem;
 
   return (
@@ -33,6 +34,9 @@ export function CartItemRow({ line }: CartItemRowProps) {
         >
           {product.title}
         </Link>
+        {options && Object.keys(options).length > 0 && (
+          <p className="text-sm font-medium text-ink-muted">{formatOptions(options)}</p>
+        )}
         <ProductPrice price={product.price} mrp={product.mrp} />
         <div className="flex items-center gap-3">
           <div className="flex items-center overflow-hidden rounded-lg border border-line">

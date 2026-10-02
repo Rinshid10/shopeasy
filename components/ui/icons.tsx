@@ -324,3 +324,51 @@ export function PrinterIcon(props: IconProps) {
     </IconBase>
   );
 }
+
+export function HomeIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M3 10.5 12 3l9 7.5" />
+      <path d="M5 9v11h5v-6h4v6h5V9" />
+    </IconBase>
+  );
+}
+
+export function MoreIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="5" cy="12" r="1.25" />
+      <circle cx="12" cy="12" r="1.25" />
+      <circle cx="19" cy="12" r="1.25" />
+    </IconBase>
+  );
+}
+
+export function HeartIcon({
+  className = "size-5",
+  filled = false,
+}: IconProps & { filled?: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 7.9 3.6 4.5 7 4.5c2 0 3.6 1.1 5 2.9 1.4-1.8 3-2.9 5-2.9 3.4 0 5.6 3.4 4.3 6.8-1.8 4.6-9.3 9.2-9.3 9.2Z" />
+    </svg>
+  );
+}
+
+export function ReturnArrowIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M4 12a8 8 0 1 0 2.3-5.7" />
+      <path d="M4 4v4h4" />
+    </IconBase>
+  );
+}

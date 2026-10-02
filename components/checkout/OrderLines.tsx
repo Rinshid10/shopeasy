@@ -1,9 +1,10 @@
 import { ProductImage } from "@/components/product/ProductImage";
 import { formatPrice } from "@/lib/format";
+import { formatOptions } from "@/lib/product-options";
 import type { OrderLine } from "@/types";
 
 interface OrderLinesProps {
-  lines: Pick<OrderLine, "productSlug" | "title" | "imageUrl" | "price" | "quantity">[];
+  lines: Pick<OrderLine, "productSlug" | "title" | "imageUrl" | "price" | "quantity" | "options">[];
 }
 
 /** A read-only list of ordered products with quantity and line total. */
@@ -17,7 +18,12 @@ export function OrderLines({ lines }: OrderLinesProps) {
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
             <p className="line-clamp-2 text-sm font-medium text-ink">{line.title}</p>
-            <p className="text-sm text-ink-muted">Qty: {line.quantity}</p>
+            <p className="text-sm text-ink-muted">
+              {line.options &&
+                Object.keys(line.options).length > 0 &&
+                `${formatOptions(line.options)} · `}
+              Qty: {line.quantity}
+            </p>
           </div>
           <p className="text-sm font-semibold text-ink">
             {formatPrice(line.price * line.quantity)}

@@ -33,6 +33,9 @@
   /* Green for ratings and discount badges. */
   --color-positive: #15803d;
   --color-positive-soft: #dcfce7;
+  /* Gold for star ratings. */
+  --color-star: #f5a623;
+
   /* Rating bars, Meesho-style: green, green, yellow, orange, red from 5 stars down. */
   --color-rating-good: #f4b740;
   --color-rating-average: #ed8a3f;
@@ -87,10 +90,24 @@
     outline-offset: 2px;
   }
 
-  /* On phones, pages with an action bar fixed to the bottom keep other things clear of it. */
+  /* On phones the shop works like an app: a tab bar along the bottom, or on product and
+     checkout pages an action bar (Buy Now, Continue) in its place. Pages keep clear of it. */
   @media (width < 48rem) {
+    :root:has(.bottom-tab-bar) {
+      --bottom-bar-height: calc(4rem + env(safe-area-inset-bottom));
+    }
+
     :root:has(.bottom-action-bar) {
       --bottom-bar-height: 4.75rem;
+    }
+
+    :root:has(.bottom-action-bar) .bottom-tab-bar {
+      display: none;
+    }
+
+    :root:has(.bottom-tab-bar, .bottom-action-bar) body {
+      padding-bottom: var(--bottom-bar-height);
+      background-color: var(--color-surface-muted);
     }
   }
 }

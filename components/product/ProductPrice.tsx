@@ -5,7 +5,7 @@ interface ProductPriceProps {
   price: number;
   /** The listed MRP. Shown struck through, with the discount, when it is above the price. */
   mrp?: number;
-  /** "md" stacks the discount under the price for cards; "lg" keeps it on one line. */
+  /** "md" for cards, "lg" for larger spots; both keep the discount beside the price. */
   size?: "md" | "lg";
 }
 
@@ -15,12 +15,7 @@ export function ProductPrice({ price, mrp, size = "md" }: ProductPriceProps) {
   const isLarge = size === "lg";
 
   return (
-    <div
-      className={cn(
-        "flex",
-        isLarge ? "flex-wrap items-center gap-x-3 gap-y-1" : "flex-col items-start gap-1",
-      )}
-    >
+    <div className={cn("flex flex-wrap items-center gap-y-1", isLarge ? "gap-x-3" : "gap-x-2")}>
       <p className="flex items-baseline gap-2">
         <span
           className={cn(

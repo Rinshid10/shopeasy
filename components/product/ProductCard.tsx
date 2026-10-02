@@ -3,7 +3,9 @@ import { BuyNowButton } from "@/components/product/BuyNowButton";
 import { ProductImage } from "@/components/product/ProductImage";
 import { ProductPrice } from "@/components/product/ProductPrice";
 import { ProductRating } from "@/components/product/ProductRating";
+import { WishlistButton } from "@/components/product/WishlistButton";
 import { Card } from "@/components/ui/Card";
+import { getProductOptions } from "@/lib/product-options";
 import { routes } from "@/lib/routes";
 import type { Product } from "@/types";
 
@@ -19,8 +21,13 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
   return (
     <Card
       as="article"
-      className="flex h-full flex-col p-2.5 hover:-translate-y-1 hover:border-brand/30 hover:shadow-xl hover:shadow-ink/10 sm:p-3"
+      className="relative flex h-full flex-col p-2.5 hover:-translate-y-1 hover:border-brand/30 hover:shadow-xl hover:shadow-ink/10 sm:p-3"
     >
+      <WishlistButton
+        productSlug={product.slug}
+        productTitle={product.title}
+        className="absolute top-4 right-4 z-10 size-8"
+      />
       <Link href={routes.product(product.slug)} className="group flex flex-col gap-2 rounded-xl">
         <ProductImage
           product={product}
@@ -46,7 +53,13 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
           )
         )}
         <ProductPrice price={product.price} mrp={product.mrp} />
-        <BuyNowButton productSlug={product.slug} productTitle={product.title} size="sm" compact />
+        <BuyNowButton
+          productSlug={product.slug}
+          productTitle={product.title}
+          options={getProductOptions(product)}
+          size="sm"
+          compact
+        />
       </div>
     </Card>
   );

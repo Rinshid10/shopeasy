@@ -59,23 +59,52 @@ export type Database = {
         };
         Relationships: [];
       };
+      wishlist_items: {
+        Row: {
+          added_at: string;
+          product_id: string;
+          user_id: string;
+        };
+        Insert: {
+          added_at?: string;
+          product_id: string;
+          user_id?: string;
+        };
+        Update: {
+          added_at?: string;
+          product_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "wishlist_items_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       cart_items: {
         Row: {
           added_at: string;
           product_id: string;
           quantity: number;
+          options: Json;
           user_id: string;
         };
         Insert: {
           added_at?: string;
           product_id: string;
           quantity: number;
+          options?: Json;
           user_id?: string;
         };
         Update: {
           added_at?: string;
           product_id?: string;
           quantity?: number;
+          options?: Json;
           user_id?: string;
         };
         Relationships: [
@@ -204,6 +233,7 @@ export type Database = {
           product_id: string | null;
           product_slug: string;
           quantity: number;
+          options: Json;
           title: string;
         };
         Insert: {
@@ -214,6 +244,7 @@ export type Database = {
           product_id?: string | null;
           product_slug: string;
           quantity: number;
+          options?: Json;
           title: string;
         };
         Update: {
@@ -224,6 +255,7 @@ export type Database = {
           product_id?: string | null;
           product_slug?: string;
           quantity?: number;
+          options?: Json;
           title?: string;
         };
         Relationships: [

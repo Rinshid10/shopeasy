@@ -1,3 +1,4 @@
+import { toSelectedOptions, type SelectedOptions } from "@/lib/product-options";
 import { getImageUrl } from "@/lib/supabase/mappers";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { siteConfig } from "@/lib/site-config";
@@ -135,6 +136,7 @@ function toOrder(row: OrderRow): Order {
         imageUrl: getImageUrl(item.image_path),
         price: item.price,
         quantity: item.quantity,
+        options: toSelectedOptions(item.options),
       })),
     address: row.address as unknown as Address,
     paymentMethod: "cod",
@@ -165,7 +167,7 @@ async function fetchState(): Promise<CheckoutState> {
   }
 
   const [cart, address, orders] = await Promise.all([
-    supabase().from("cart_items").select("quantity, products(id, slug)").order("added_at"),
+    supabase().from("cart_items").select("quantity, options, products(id, slug)").order("added_at"),
     supabase().from("addresses").select("*").eq("is_default", true).maybeSingle(),
     supabase().from("orders").select("*, order_items(*)").order("placed_at", { ascending: false }),
   ]);
@@ -174,10 +176,10 @@ async function fetchState(): Promise<CheckoutState> {
   if (orders.error) throw orders.error;
 
   savedAddressId = address.data?.id ?? null;
-  const cartItems: CartItem[] = cart.data.flatMap(({ quantity, products }) => {
+  const cartItems: CartItem[] = cart.data.flatMap(({ quantity, options, products }) => {
     if (!products) return [];
     productIds.set(products.slug, products.id);
-    return [{ productSlug: products.slug, quantity }];
+    return [{ productSlug: products.slug, quantity, options: toSelectedOptions(options) }];
   });
 
   return {
@@ -312,7 +314,14 @@ async function writeSelection(items: CartItem[]) {
   const rows = items.flatMap((item) => {
     const productId = ids.get(item.productSlug);
     return productId
-      ? [{ user_id: userId, product_id: productId, quantity: clampQuantity(item.quantity) }]
+      ? [
+          {
+            user_id: userId,
+            product_id: productId,
+            quantity: clampQuantity(item.quantity),
+            options: item.options ?? {},
+          },
+        ]
       : [];
   });
   if (rows.length === 0) return;
@@ -322,10 +331,10 @@ async function writeSelection(items: CartItem[]) {
 
 /**
  * "Buy Now": the shop has no cart, so this replaces whatever was being bought with one of
- * this product, ready for checkout.
+ * this product, ready for checkout, with the options picked (Size, Color, …) and quantity.
  */
-export function buyNow(productSlug: string) {
-  const selection = [{ productSlug, quantity: 1 }];
+export function buyNow(productSlug: string, options: SelectedOptions = {}, quantity = 1) {
+  const selection: CartItem[] = [{ productSlug, quantity: clampQuantity(quantity), options }];
   updateState((state) => ({ ...state, cart: selection }));
   void enqueue(() => writeSelection(selection));
 }

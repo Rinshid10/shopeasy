@@ -1,20 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BuyNowButton } from "@/components/product/BuyNowButton";
-import { ProductCard } from "@/components/product/ProductCard";
+import { ProductCarousel } from "@/components/product/ProductCarousel";
 import { ProductGallery } from "@/components/product/ProductGallery";
-import { getSizes, ProductHighlights } from "@/components/product/ProductHighlights";
-import { ProductPromises } from "@/components/product/ProductPromises";
+import { ProductInfo } from "@/components/product/ProductInfo";
 import { ProductReviews } from "@/components/product/ProductReviews";
-import { ProductSizes } from "@/components/product/ProductSizes";
-import { PRODUCT_MAIN_BUY_BUTTON_ID, ProductSummary } from "@/components/product/ProductSummary";
+import { ProductSummary } from "@/components/product/ProductSummary";
 import { StickyBuyBar } from "@/components/product/StickyBuyBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
 import { getCategoryBySlug } from "@/lib/categories";
 import { getProductBySlug, getProducts, getRelatedProducts } from "@/lib/products";
+import { getProductOptions } from "@/lib/product-options";
 import { getReviewSummary } from "@/lib/reviews";
 import { routes } from "@/lib/routes";
 import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
@@ -47,7 +45,10 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   });
 }
 
-/** A product page laid out like Meesho's: pictures and Buy Now on the left, details on the right. */
+/**
+ * A product page: pictures beside the main box (price, options, quantity, Buy Now), then the
+ * description and specifications, reviews, and products people also viewed.
+ */
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
@@ -60,9 +61,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     getRelatedProducts(product, RELATED_COUNT),
     getReviewSummary(product.slug),
   ]);
-  const sizes = getSizes(product);
-  // With several pictures the thumbnail column sits left of the main one; line Buy Now up under it.
-  const hasThumbnails = Boolean(product.imageUrl) && product.extraImageUrls.length > 0;
+  const options = getProductOptions(product);
 
   const breadcrumbs: BreadcrumbItem[] = [
     { label: "Home", href: routes.home },
@@ -76,23 +75,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <JsonLd data={breadcrumbJsonLd(breadcrumbs, routes.product(product.slug))} />
         <Breadcrumbs items={breadcrumbs} />
         <div className="grid items-start gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] md:gap-6">
-          <div className="flex flex-col gap-4 md:sticky md:top-32">
+          <div className="md:sticky md:top-32">
             <ProductGallery product={product} sizes={MAIN_IMAGE_SIZES} />
-            <div
-              id={PRODUCT_MAIN_BUY_BUTTON_ID}
-              className={hasThumbnails ? "md:pl-[4.5rem]" : undefined}
-            >
-              <BuyNowButton productSlug={product.slug} productTitle={product.title} size="lg" />
-            </div>
           </div>
-          <div className="flex flex-col gap-4">
-            <ProductSummary product={product} />
-            {sizes.length > 0 && <ProductSizes sizes={sizes} />}
-            <ProductHighlights product={product} />
-            <ProductReviews summary={reviews} meesho={product.meesho} />
-            <ProductPromises />
-          </div>
+          <ProductSummary product={product} options={options} />
         </div>
+        <ProductInfo product={product} />
+        <ProductReviews summary={reviews} meesho={product.meesho} />
         {relatedProducts.length > 0 && (
           <section aria-labelledby="related-heading" className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-3">
@@ -108,17 +97,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </Link>
               )}
             </div>
-            <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {relatedProducts.map((related) => (
-                <li key={related.slug}>
-                  <ProductCard product={related} />
-                </li>
-              ))}
-            </ul>
+            <ProductCarousel products={relatedProducts} label="People also viewed" />
           </section>
         )}
       </Container>
-      <StickyBuyBar product={product} mainButtonId={PRODUCT_MAIN_BUY_BUTTON_ID} />
+      <StickyBuyBar product={product} options={options} />
     </>
   );
 }

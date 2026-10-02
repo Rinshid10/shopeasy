@@ -1,6 +1,8 @@
 export interface CartItem {
   productSlug: string;
   quantity: number;
+  /** The options picked, e.g. { Size: "M", Color: "Black" }. */
+  options?: Record<string, string>;
 }
 
 export interface Address {
@@ -25,6 +27,8 @@ export interface OrderLine {
   imageUrl: string | null;
   price: number;
   quantity: number;
+  /** The options ordered, e.g. { Size: "M", Color: "Black" }. */
+  options?: Record<string, string>;
 }
 
 export type OrderStatus = "placed" | "cancelled";

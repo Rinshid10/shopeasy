@@ -38,7 +38,7 @@ export function ProductCarousel({ products, label }: ProductCarouselProps) {
       <ul
         ref={trackRef}
         aria-label={label}
-        className="-mx-4 scrollbar-none flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:scroll-px-6 sm:px-6 lg:mx-0 lg:scroll-px-0 lg:px-0"
+        className="relative -mx-4 scrollbar-none flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:scroll-px-6 sm:px-6 lg:mx-0 lg:scroll-px-0 lg:px-0"
       >
         {products.map((product) => (
           <li key={product.slug} className="w-40 shrink-0 snap-start sm:w-48 lg:w-52">

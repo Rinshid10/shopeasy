@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { AdminBrand } from "@/components/admin/AdminBrand";
-import { AdminMobileMenu } from "@/components/admin/AdminMobileMenu";
 import { AdminNavList } from "@/components/admin/AdminNavList";
 import { AdminSignOutButton } from "@/components/admin/AdminSignOutButton";
+import { AdminTabBar } from "@/components/admin/AdminTabBar";
 import { StoreIcon } from "@/components/ui/icons";
 import { requireAdmin } from "@/lib/admin/session";
 import { routes } from "@/lib/routes";
 
-/** The admin area: a sidebar on large screens, a slide-in menu on phones, and a top bar. */
+/** The admin area: a sidebar on large screens, a bottom tab bar on phones, and a top bar. */
 export default async function AdminPanelLayout({ children }: LayoutProps<"/admin">) {
   const { email } = await requireAdmin();
 
@@ -24,7 +24,6 @@ export default async function AdminPanelLayout({ children }: LayoutProps<"/admin
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-line bg-surface px-4 sm:px-6 print:hidden">
-          <AdminMobileMenu />
           <div className="lg:hidden">
             <AdminBrand />
           </div>
@@ -37,10 +36,14 @@ export default async function AdminPanelLayout({ children }: LayoutProps<"/admin
           </Link>
           <AdminSignOutButton initial={(email[0] ?? "A").toUpperCase()} email={email} />
         </header>
-        <main id="main-content" className="flex-1 px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
+        <main
+          id="main-content"
+          className="flex-1 px-4 pt-5 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-6 sm:pt-6 lg:px-8 lg:pb-6"
+        >
           {children}
         </main>
       </div>
+      <AdminTabBar />
     </div>
   );
 }

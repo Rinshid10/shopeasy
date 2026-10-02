@@ -3,6 +3,7 @@
 import type { User } from "@supabase/supabase-js";
 
 import { carryOverSelection, getCheckoutSnapshot } from "@/lib/checkout/store";
+import { carryOverWishlist, getWishlistSlugs } from "@/lib/wishlist";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 // Customers log in with their name and email, then type the code we email them. No password;
@@ -113,13 +114,14 @@ export async function getGuestDetails(userId: string): Promise<GuestDetails | nu
   return details;
 }
 
-/** Checks the emailed code and logs the customer in, bringing their guest cart along. */
+/** Checks the emailed code and logs the customer in, bringing their guest cart and wishlist along. */
 export async function verifyLoginCode(
   fullName: string,
   email: string,
   code: string,
 ): Promise<void> {
   const guestCart = getCheckoutSnapshot()?.cart ?? [];
+  const guestWishlist = getWishlistSlugs();
   const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase.auth.verifyOtp({ email, token: code, type: "email" });
   if (error) throw new Error(friendlyMessage(error));
@@ -132,6 +134,7 @@ export async function verifyLoginCode(
   // Keep the name the customer typed this time on their profile.
   await supabase.from("profiles").update({ full_name: fullName }).eq("id", data.user.id);
   await carryOverSelection(guestCart);
+  await carryOverWishlist(guestWishlist);
 }
 
 export async function signOut(): Promise<void> {

@@ -4,6 +4,8 @@ import type { CartItem, DeliveryRule, Product } from "@/types";
 export interface CartLine {
   product: Product;
   quantity: number;
+  /** The options picked, e.g. { Size: "M", Color: "Black" }. */
+  options?: Record<string, string>;
 }
 
 export interface PriceSummary {
@@ -19,7 +21,7 @@ export interface PriceSummary {
 export function getCartLines(cart: CartItem[], products: Product[]): CartLine[] {
   return cart.flatMap((item) => {
     const product = products.find((candidate) => candidate.slug === item.productSlug);
-    return product ? [{ product, quantity: item.quantity }] : [];
+    return product ? [{ product, quantity: item.quantity, options: item.options }] : [];
   });
 }
 
