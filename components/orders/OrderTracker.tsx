@@ -17,6 +17,15 @@ function getSteps(order: Order): TrackerStep[] {
     state: "done",
   };
 
+  if (order.isDelivered) {
+    return [
+      ordered,
+      { label: "Shipped", state: "done" },
+      { label: "Out for delivery", state: "done" },
+      { label: "Delivered", state: "done" },
+    ];
+  }
+
   if (order.status === "cancelled") {
     return [
       ordered,

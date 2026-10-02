@@ -11,7 +11,7 @@ export type {
   PaymentMethod,
 } from "./checkout";
 export type { BreadcrumbItem, NavLink } from "./navigation";
-export type { Product, ProductSpec } from "./product";
+export type { MeeshoRatings, MeeshoReview, Product, ProductSpec } from "./product";
 export type {
   AdminOrder,
   AdminOrderEvent,

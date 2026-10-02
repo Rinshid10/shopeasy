@@ -13,8 +13,9 @@ interface ProductGalleryProps {
 }
 
 /**
- * The product page's pictures: one large picture, with thumbnails underneath when the product
- * has more than one. Tapping a thumbnail shows it large.
+ * The product page's pictures, laid out like Meesho: a column of thumbnails beside the large
+ * picture on wider screens, and a row underneath on phones. Hovering or tapping a thumbnail
+ * shows it large.
  */
 export function ProductGallery({ product, sizes }: ProductGalleryProps) {
   const pictures = [product.imageUrl, ...product.extraImageUrls].filter((url): url is string =>
@@ -24,15 +25,25 @@ export function ProductGallery({ product, sizes }: ProductGalleryProps) {
   const shownUrl = pictures[selected] ?? product.imageUrl;
 
   return (
-    <div className="flex flex-col gap-3">
-      <ProductImage product={{ title: product.title, imageUrl: shownUrl }} sizes={sizes} preload />
+    <div className="flex flex-col gap-3 md:flex-row-reverse md:items-start">
+      <div className="min-w-0 flex-1 rounded-xl border border-line bg-surface p-2">
+        <ProductImage
+          product={{ title: product.title, imageUrl: shownUrl }}
+          sizes={sizes}
+          preload
+        />
+      </div>
       {pictures.length > 1 && (
-        <ul className="grid grid-cols-4 gap-2" aria-label="More pictures">
+        <ul
+          aria-label="More pictures"
+          className="scrollbar-none flex gap-2 overflow-x-auto md:w-16 md:shrink-0 md:flex-col"
+        >
           {pictures.map((url, index) => (
-            <li key={url}>
+            <li key={url} className="w-16 shrink-0">
               <button
                 type="button"
                 onClick={() => setSelected(index)}
+                onMouseEnter={() => setSelected(index)}
                 aria-label={`Show picture ${index + 1} of ${pictures.length}`}
                 aria-pressed={index === selected}
                 className={cn(
@@ -40,7 +51,7 @@ export function ProductGallery({ product, sizes }: ProductGalleryProps) {
                   index === selected ? "border-brand" : "border-line hover:border-ink-muted",
                 )}
               >
-                <Image src={url} alt="" fill sizes="96px" className="object-contain p-1" />
+                <Image src={url} alt="" fill sizes="64px" className="object-contain p-1" />
               </button>
             </li>
           ))}

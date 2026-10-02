@@ -31,5 +31,8 @@ export function describeOrderStatus(order: Order): string {
   if (order.status === "cancelled") {
     return order.cancelledAt ? `Cancelled on ${formatShortDate(order.cancelledAt)}` : "Cancelled";
   }
+  if (order.isDelivered) {
+    return "Delivered";
+  }
   return `Arriving by ${formatShortDate(getExpectedDeliveryDate(order.placedAt))}`;
 }

@@ -6,6 +6,7 @@ import { AddressCard } from "@/components/checkout/AddressCard";
 import { CheckoutLoading } from "@/components/checkout/CheckoutStatus";
 import { OrderLines } from "@/components/checkout/OrderLines";
 import { CancelOrderButton } from "@/components/orders/CancelOrderButton";
+import { OrderReviews } from "@/components/orders/OrderReviews";
 import { OrderTracker } from "@/components/orders/OrderTracker";
 import { WhatsAppOrderButton } from "@/components/orders/WhatsAppOrderButton";
 import { ButtonLink } from "@/components/ui/ButtonLink";
@@ -70,6 +71,7 @@ export function OrderDetails() {
             <h2 className="font-bold text-ink">Products</h2>
             <OrderLines lines={order.lines} />
           </Card>
+          {order.isDelivered && <OrderReviews order={order} />}
         </div>
         <div className="flex flex-col gap-4">
           <Card className="flex flex-col gap-3 p-4 sm:p-5">
@@ -88,7 +90,7 @@ export function OrderDetails() {
             </p>
           </Card>
           {!isCancelled && <WhatsAppOrderButton order={order} />}
-          {!isCancelled && <CancelOrderButton orderId={order.id} />}
+          {!isCancelled && !order.isDelivered && <CancelOrderButton orderId={order.id} />}
           <p className="text-center text-xs text-ink-muted">
             Need help with this order? Write to{" "}
             <a

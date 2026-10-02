@@ -11,8 +11,14 @@ import {
 } from "@/lib/admin/product-form";
 import { requireAdmin } from "@/lib/admin/session";
 import { CATALOGUE_TAG } from "@/lib/catalogue-cache";
+import { REVIEWS_TAG } from "@/lib/reviews";
+import {
+  isMeeshoReviewImage,
+  MAX_REVIEW_IMAGES,
+  PRODUCT_IMAGES_BUCKET,
+} from "@/lib/supabase/mappers";
 import { routes } from "@/lib/routes";
-import type { AdminOrderStatus, Coupon, ReturnStatus, StoreSettings } from "@/types";
+import type { AdminOrderStatus, Coupon, MeeshoRatings, ReturnStatus, StoreSettings } from "@/types";
 
 // Every admin change goes through these Server Actions. Each one checks the admin session
 // itself (Server Actions are public endpoints), and RLS checks the admin role again.
@@ -55,12 +61,15 @@ interface SaveProductInput {
    * At least 1 and at most 4.
    */
   imagePaths: string[];
+  /** Meesho rating and reviews to show on the product page, or null to show none. */
+  meesho?: MeeshoRatings | null;
 }
 
 export async function saveProduct({
   slug,
   values,
   imagePaths,
+  meesho,
 }: SaveProductInput): Promise<ActionResult<{ slug: string }>> {
   const { supabase } = await requireAdmin();
 
@@ -91,6 +100,29 @@ export async function saveProduct({
     status: values.listingStatus,
     image_path: imagePaths[0],
     extra_image_paths: imagePaths.slice(1),
+    ...(meesho === undefined
+      ? {}
+      : {
+          meesho_rating: meesho
+            ? Math.min(5, Math.max(0, Math.round(meesho.rating * 10) / 10))
+            : null,
+          meesho_rating_count: meesho?.ratingCount ?? null,
+          meesho_review_count: meesho?.reviewCount ?? null,
+          meesho_star_counts:
+            meesho?.starCounts?.length === 5
+              ? meesho.starCounts.map((count) => Math.max(0, Math.round(count)))
+              : null,
+          meesho_url: meesho?.url ?? null,
+          meesho_reviews: (meesho?.reviews ?? []).slice(0, 20).map((review) => ({
+            rating: Math.min(5, Math.max(1, Math.round(review.rating))),
+            ...(review.name ? { name: review.name.slice(0, 80) } : {}),
+            comment: review.comment.slice(0, 1000),
+            ...(review.images?.length
+              ? { images: review.images.filter(isMeeshoReviewImage).slice(0, MAX_REVIEW_IMAGES) }
+              : {}),
+            date: review.date.slice(0, 10),
+          })),
+        }),
   };
 
   if (slug) {
@@ -192,5 +224,66 @@ export async function saveStoreSettings(settings: StoreSettings): Promise<Action
   if (error) return failure(error);
   revalidatePath(routes.admin.settings);
   refreshStore();
+  return { ok: true, data: undefined };
+}
+
+/** Hides a review from the shop, or shows it again. */
+export async function setReviewHidden(reviewId: string, hidden: boolean): Promise<ActionResult> {
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.rpc("set_review_hidden", {
+    p_review_id: reviewId,
+    p_hidden: hidden,
+  });
+  if (error) return failure(error);
+  updateTag(REVIEWS_TAG);
+  updateTag(CATALOGUE_TAG);
+  revalidatePath(routes.admin.reviews);
+  return { ok: true, data: undefined };
+}
+
+/**
+ * Deletes a product from the shop. Past orders keep their own copy of its name, price and
+ * picture, so order history is unaffected; its cart entries and reviews go with it. Its
+ * uploaded pictures are removed too, unless another product uses them.
+ */
+export async function deleteProduct(slug: string): Promise<ActionResult> {
+  const { supabase } = await requireAdmin();
+
+  const { data: product, error: readError } = await supabase
+    .from("products")
+    .select("id, image_path, extra_image_paths")
+    .eq("slug", slug)
+    .maybeSingle();
+  if (readError) return failure(readError);
+  if (!product) return { ok: false, error: "This product no longer exists." };
+
+  const { error } = await supabase.from("products").delete().eq("id", product.id);
+  if (error) return failure(error);
+
+  // Uploaded pictures (not the demo ones in public/) that no other product uses.
+  const pictures = [product.image_path, ...product.extra_image_paths].filter(
+    (path): path is string =>
+      typeof path === "string" && !path.startsWith("/") && !path.startsWith("http"),
+  );
+  if (pictures.length > 0) {
+    const { data: others } = await supabase
+      .from("products")
+      .select("image_path, extra_image_paths");
+    const inUse = new Set(
+      (others ?? []).flatMap((other) => [other.image_path, ...other.extra_image_paths]),
+    );
+    const unused = pictures.filter((path) => !inUse.has(path));
+    if (unused.length > 0) {
+      const { error: storageError } = await supabase.storage
+        .from(PRODUCT_IMAGES_BUCKET)
+        .remove(unused);
+      if (storageError) console.error("[delete product] couldn't remove pictures", storageError);
+    }
+  }
+
+  refreshStore();
+  updateTag(REVIEWS_TAG);
+  revalidatePath(routes.admin.products);
+  revalidatePath(routes.admin.inventory);
   return { ok: true, data: undefined };
 }

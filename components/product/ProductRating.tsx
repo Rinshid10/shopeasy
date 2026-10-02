@@ -5,10 +5,12 @@ interface ProductRatingProps {
   rating: number;
   /** How many ratings the average is based on. */
   count?: number;
+  /** Where the rating comes from, when it isn't this shop's customers, e.g. "Meesho". */
+  source?: string;
 }
 
 /** A green badge with the average rating out of 5, followed by the number of ratings. */
-export function ProductRating({ rating, count }: ProductRatingProps) {
+export function ProductRating({ rating, count, source }: ProductRatingProps) {
   return (
     <p className="flex items-center gap-1.5 text-xs">
       <span className="inline-flex items-center gap-0.5 rounded bg-positive px-1.5 py-0.5 leading-none font-semibold text-surface">
@@ -17,11 +19,14 @@ export function ProductRating({ rating, count }: ProductRatingProps) {
         {rating.toFixed(1)}
         <span className="sr-only">out of 5</span>
       </span>
-      {count !== undefined && (
+      {count !== undefined ? (
         <span className="text-ink-muted">
           ({formatCount(count)}
-          <span className="sr-only"> ratings</span>)
+          <span className="sr-only"> ratings</span>
+          {source && ` on ${source}`})
         </span>
+      ) : (
+        source && <span className="text-ink-muted">on {source}</span>
       )}
     </p>
   );

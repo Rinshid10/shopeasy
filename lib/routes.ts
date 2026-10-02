@@ -28,6 +28,7 @@ export const routes = {
     customers: "/admin/customers",
     coupons: "/admin/coupons",
     returns: "/admin/returns",
+    reviews: "/admin/reviews",
     payments: "/admin/payments",
     settings: "/admin/settings",
   },

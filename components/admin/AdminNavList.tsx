@@ -10,6 +10,7 @@ import {
   PackageIcon,
   ReturnIcon,
   SettingsIcon,
+  StarIcon,
   TagIcon,
   TicketIcon,
   UsersIcon,
@@ -31,6 +32,7 @@ const NAV_ITEMS: AdminNavItem[] = [
   { label: "Customers", href: routes.admin.customers, icon: <UsersIcon /> },
   { label: "Coupons", href: routes.admin.coupons, icon: <TicketIcon /> },
   { label: "Returns", href: routes.admin.returns, icon: <ReturnIcon /> },
+  { label: "Reviews", href: routes.admin.reviews, icon: <StarIcon /> },
   { label: "Payments", href: routes.admin.payments, icon: <CashIcon /> },
   { label: "Settings", href: routes.admin.settings, icon: <SettingsIcon /> },
 ];

@@ -13,10 +13,22 @@ import type { Database } from "@/types/supabase";
  * page dynamic.
  */
 export async function createSupabaseAdminServerClient() {
+  return createCookieClient(adminCookieOptions);
+}
+
+/**
+ * A Supabase client acting as the shop customer (from the shop's login cookie), for Server
+ * Actions the shop calls, such as saving a review.
+ */
+export async function createSupabaseShopServerClient() {
+  return createCookieClient();
+}
+
+async function createCookieClient(cookieOptions?: typeof adminCookieOptions) {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(supabaseUrl, supabasePublishableKey, {
-    cookieOptions: adminCookieOptions,
+    cookieOptions,
     cookies: {
       getAll() {
         return cookieStore.getAll();

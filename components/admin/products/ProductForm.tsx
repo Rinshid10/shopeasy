@@ -1,15 +1,21 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition, type FormEvent } from "react";
+import { useRef, useState, useTransition, type FormEvent } from "react";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { ProductFormFields } from "@/components/admin/products/ProductFormFields";
+import { DeleteProductButton } from "@/components/admin/products/DeleteProductButton";
 import { MeeshoPasteCard } from "@/components/admin/products/MeeshoPasteCard";
+import {
+  MeeshoReviewsCard,
+  type MeeshoReviewsHandle,
+} from "@/components/admin/products/MeeshoReviewsCard";
 import { ProductImagesField } from "@/components/admin/products/ProductImagesField";
 import { SaveStatus, type SaveState } from "@/components/admin/SaveStatus";
 import { Button } from "@/components/ui/Button";
 import { saveProduct } from "@/lib/admin/actions";
 import {
+  MAX_PICTURES,
   MIN_PICTURES,
   toFormValues,
   validateProductForm,
@@ -19,7 +25,7 @@ import {
 import type { AdminProduct } from "@/lib/admin/queries";
 import { cn } from "@/lib/cn";
 import { routes } from "@/lib/routes";
-import type { Category, ListingStatus } from "@/types";
+import type { Category, ListingStatus, MeeshoRatings } from "@/types";
 
 interface ProductFormProps {
   /** The product to edit; leave out to add a new one. */
@@ -40,6 +46,9 @@ export function ProductForm({ product, categories }: ProductFormProps) {
   const [errors, setErrors] = useState<ProductFormErrors>({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [imagePaths, setImagePaths] = useState<string[]>(product?.imagePaths ?? []);
+  const reviews = useRef<MeeshoReviewsHandle>(null);
+  // Meesho rating and reviews shown on the product page, labelled as from Meesho.
+  const [meesho, setMeesho] = useState<MeeshoRatings | null>(product?.meesho ?? null);
   const needsPicture = hasSubmitted && imagePaths.length < MIN_PICTURES;
   const [saveState, setSaveState] = useState<SaveState>({ status: "idle" });
   const [isSaving, startSaving] = useTransition();
@@ -55,13 +64,34 @@ export function ProductForm({ product, categories }: ProductFormProps) {
   }
 
   /** Fills the form from pasted Meesho text, keeping a SKU that was already typed. */
-  function fillFromMeesho(filled: Partial<ProductFormValues>) {
-    const next = { ...values, ...filled, sku: values.sku || filled.sku || "" };
-    setValues(next);
-    setSaveState({ status: "idle" });
-    if (hasSubmitted) {
-      setErrors(validateProductForm(next));
+  /**
+   * Fills the form from Meesho, keeping a SKU that was already typed and adding imported
+   * pictures after any already chosen (up to 4). Uses the latest state, because an import
+   * finishes up to a minute after it starts.
+   */
+  function fillFromMeesho(
+    filled: Partial<ProductFormValues>,
+    importedPaths?: string[],
+    meeshoRating?: Omit<MeeshoRatings, "reviews"> | null,
+  ) {
+    if (meeshoRating) {
+      setMeesho((current) => ({ ...meeshoRating, reviews: current?.reviews ?? [] }));
     }
+    setValues((current) => {
+      const next = { ...current, ...filled, sku: current.sku || filled.sku || "" };
+      if (hasSubmitted) {
+        setErrors(validateProductForm(next));
+      }
+      return next;
+    });
+    if (importedPaths && importedPaths.length > 0) {
+      setImagePaths((current) => [...current, ...importedPaths].slice(0, MAX_PICTURES));
+    }
+    // A link import (it brings pictures) also looks up the product's Meesho reviews.
+    if (importedPaths !== undefined && filled.title) {
+      reviews.current?.fetchFor(filled.title);
+    }
+    setSaveState({ status: "idle" });
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -80,7 +110,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
     }
     setSaveState({ status: "saving" });
     startSaving(async () => {
-      const result = await saveProduct({ slug: product?.slug, values, imagePaths });
+      const result = await saveProduct({ slug: product?.slug, values, imagePaths, meesho });
       if (!result.ok) {
         setSaveState({ status: "error", error: result.error });
         return;
@@ -101,6 +131,35 @@ export function ProductForm({ product, categories }: ProductFormProps) {
           errors={errors}
           categories={categories}
           onChange={update}
+        />
+        <MeeshoReviewsCard
+          ref={reviews}
+          productTitle={values.title}
+          attached={meesho}
+          onAttach={(research) => {
+            setMeesho((current) => {
+              const rating = current?.rating ?? research.averageRating;
+              if (rating === null) return current;
+              return {
+                ...current,
+                rating,
+                ratingCount: current?.ratingCount ?? research.ratingCount ?? undefined,
+                url: current?.url ?? research.matchedUrl ?? undefined,
+                reviews: research.reviews.slice(0, 20).map((review) => ({
+                  rating: review.rating,
+                  name: review.name,
+                  comment: review.comment,
+                  images: review.images,
+                  date: review.date.slice(0, 10),
+                })),
+              };
+            });
+            setSaveState({ status: "idle" });
+          }}
+          onDetach={() => {
+            setMeesho(null);
+            setSaveState({ status: "idle" });
+          }}
         />
       </div>
       <div className="flex flex-col gap-5 lg:sticky lg:top-24">
@@ -150,6 +209,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
           {product ? "Save changes" : "Add product"}
         </Button>
         <SaveStatus state={saveState} />
+        {product && <DeleteProductButton slug={product.slug} title={product.title} />}
       </div>
     </form>
   );

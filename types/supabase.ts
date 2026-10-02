@@ -339,6 +339,12 @@ export type Database = {
           image_path: string | null;
           is_top_pick: boolean;
           low_stock_threshold: number;
+          meesho_rating: number | null;
+          meesho_rating_count: number | null;
+          meesho_review_count: number | null;
+          meesho_reviews: Json;
+          meesho_star_counts: number[] | null;
+          meesho_url: string | null;
           mrp: number | null;
           price: number;
           pros: string[];
@@ -364,6 +370,12 @@ export type Database = {
           image_path?: string | null;
           is_top_pick?: boolean;
           low_stock_threshold?: number;
+          meesho_rating?: number | null;
+          meesho_rating_count?: number | null;
+          meesho_review_count?: number | null;
+          meesho_reviews?: Json;
+          meesho_star_counts?: number[] | null;
+          meesho_url?: string | null;
           mrp?: number | null;
           price: number;
           pros?: string[];
@@ -389,6 +401,12 @@ export type Database = {
           image_path?: string | null;
           is_top_pick?: boolean;
           low_stock_threshold?: number;
+          meesho_rating?: number | null;
+          meesho_rating_count?: number | null;
+          meesho_review_count?: number | null;
+          meesho_reviews?: Json;
+          meesho_star_counts?: number[] | null;
+          meesho_url?: string | null;
           mrp?: number | null;
           price?: number;
           pros?: string[];
@@ -410,6 +428,60 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "categories";
             referencedColumns: ["slug"];
+          },
+        ];
+      };
+      product_reviews: {
+        Row: {
+          comment: string;
+          created_at: string;
+          id: string;
+          is_hidden: boolean;
+          order_id: string;
+          product_id: string;
+          rating: number;
+          reviewer_name: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          comment?: string;
+          created_at?: string;
+          id?: string;
+          is_hidden?: boolean;
+          order_id: string;
+          product_id: string;
+          rating: number;
+          reviewer_name?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          comment?: string;
+          created_at?: string;
+          id?: string;
+          is_hidden?: boolean;
+          order_id?: string;
+          product_id?: string;
+          rating?: number;
+          reviewer_name?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "product_reviews_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
           },
         ];
       };
@@ -557,6 +629,10 @@ export type Database = {
       place_order: { Args: { p_address_id: string }; Returns: string };
       set_order_status: {
         Args: { p_order_id: string; p_status: string };
+        Returns: undefined;
+      };
+      set_review_hidden: {
+        Args: { p_review_id: string; p_hidden: boolean };
         Returns: undefined;
       };
     };

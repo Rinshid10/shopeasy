@@ -140,6 +140,7 @@ function toOrder(row: OrderRow): Order {
     paymentMethod: "cod",
     total: row.total,
     cancelledAt: row.cancelled_at ?? undefined,
+    isDelivered: row.status === "delivered",
   };
 }
 

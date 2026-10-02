@@ -1,24 +1,29 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ProductGrid } from "@/components/product/ProductGrid";
+import { BuyNowButton } from "@/components/product/BuyNowButton";
+import { ProductCard } from "@/components/product/ProductCard";
 import { ProductGallery } from "@/components/product/ProductGallery";
-import { ProductSpecs } from "@/components/product/ProductSpecs";
-import { ProductProsCons } from "@/components/product/ProductProsCons";
+import { getSizes, ProductHighlights } from "@/components/product/ProductHighlights";
+import { ProductPromises } from "@/components/product/ProductPromises";
+import { ProductReviews } from "@/components/product/ProductReviews";
+import { ProductSizes } from "@/components/product/ProductSizes";
 import { PRODUCT_MAIN_BUY_BUTTON_ID, ProductSummary } from "@/components/product/ProductSummary";
 import { StickyBuyBar } from "@/components/product/StickyBuyBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getCategoryBySlug } from "@/lib/categories";
 import { getProductBySlug, getProducts, getRelatedProducts } from "@/lib/products";
+import { getReviewSummary } from "@/lib/reviews";
 import { routes } from "@/lib/routes";
 import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import type { BreadcrumbItem } from "@/types";
 
 const MAIN_IMAGE_SIZES = "(min-width: 768px) 40vw, 100vw";
+/** How many products "People also viewed" shows. */
+const RELATED_COUNT = 10;
 
 type ProductPageProps = PageProps<"/product/[slug]">;
 
@@ -42,6 +47,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   });
 }
 
+/** A product page laid out like Meesho's: pictures and Buy Now on the left, details on the right. */
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
@@ -49,10 +55,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const [category, relatedProducts] = await Promise.all([
+  const [category, relatedProducts, reviews] = await Promise.all([
     getCategoryBySlug(product.categorySlug),
-    getRelatedProducts(product),
+    getRelatedProducts(product, RELATED_COUNT),
+    getReviewSummary(product.slug),
   ]);
+  const sizes = getSizes(product);
+  // With several pictures the thumbnail column sits left of the main one; line Buy Now up under it.
+  const hasThumbnails = Boolean(product.imageUrl) && product.extraImageUrls.length > 0;
 
   const breadcrumbs: BreadcrumbItem[] = [
     { label: "Home", href: routes.home },
@@ -62,41 +72,49 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <>
-      <Container width="narrow" className="flex flex-col gap-6 py-5 sm:gap-8 sm:py-8">
+      <Container width="narrow" className="flex flex-col gap-5 py-4 sm:gap-8 sm:py-6">
         <JsonLd data={breadcrumbJsonLd(breadcrumbs, routes.product(product.slug))} />
         <Breadcrumbs items={breadcrumbs} />
-        <Card className="grid gap-6 p-4 sm:p-6 md:grid-cols-5 md:gap-10">
-          <div className="md:col-span-2">
+        <div className="grid items-start gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] md:gap-6">
+          <div className="flex flex-col gap-4 md:sticky md:top-32">
             <ProductGallery product={product} sizes={MAIN_IMAGE_SIZES} />
+            <div
+              id={PRODUCT_MAIN_BUY_BUTTON_ID}
+              className={hasThumbnails ? "md:pl-[4.5rem]" : undefined}
+            >
+              <BuyNowButton productSlug={product.slug} productTitle={product.title} size="lg" />
+            </div>
           </div>
-          <div className="md:col-span-3 md:self-center">
+          <div className="flex flex-col gap-4">
             <ProductSummary product={product} />
+            {sizes.length > 0 && <ProductSizes sizes={sizes} />}
+            <ProductHighlights product={product} />
+            <ProductReviews summary={reviews} meesho={product.meesho} />
+            <ProductPromises />
           </div>
-        </Card>
-        {product.specs.length > 0 && (
-          <Card as="section" className="p-4 sm:p-6">
-            <SectionHeading title="Product details" />
-            <ProductSpecs specs={product.specs} />
-          </Card>
-        )}
-        <Card as="section" className="p-4 sm:p-6">
-          <SectionHeading title="About this product" />
-          <p className="max-w-3xl text-ink">{product.description}</p>
-        </Card>
-        {(product.pros.length > 0 || product.cons.length > 0) && (
-          <Card as="section" className="p-4 sm:p-6">
-            <SectionHeading title="Pros and cons" />
-            <ProductProsCons pros={product.pros} cons={product.cons} />
-          </Card>
-        )}
-        {category && relatedProducts.length > 0 && (
-          <section aria-labelledby="related-heading">
-            <SectionHeading
-              id="related-heading"
-              title={`More in ${category.name}`}
-              action={{ label: "View all", href: routes.category(category.slug) }}
-            />
-            <ProductGrid products={relatedProducts} />
+        </div>
+        {relatedProducts.length > 0 && (
+          <section aria-labelledby="related-heading" className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-3">
+              <h2 id="related-heading" className="text-xl font-bold text-ink">
+                People also viewed
+              </h2>
+              {category && (
+                <Link
+                  href={routes.category(category.slug)}
+                  className="text-sm font-semibold text-brand hover:underline"
+                >
+                  View all
+                </Link>
+              )}
+            </div>
+            <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+              {relatedProducts.map((related) => (
+                <li key={related.slug}>
+                  <ProductCard product={related} />
+                </li>
+              ))}
+            </ul>
           </section>
         )}
       </Container>

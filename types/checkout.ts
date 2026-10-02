@@ -40,6 +40,8 @@ export interface Order {
   total: number;
   /** ISO date-time the order was cancelled, if it was. */
   cancelledAt?: string;
+  /** True once the order has been delivered; the customer can then review its products. */
+  isDelivered?: boolean;
 }
 
 /** The store's delivery charge rule, set in the admin. */

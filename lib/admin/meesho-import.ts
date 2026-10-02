@@ -18,6 +18,8 @@ import type { Category, ProductSpec } from "@/types";
 const NAME_LABELS = new Set(["name", "product name", "title"]);
 const BRAND_LABELS = new Set(["brand", "brand name", "manufacturer", "manufacturer name"]);
 const DESCRIPTION_LABELS = new Set(["description", "product description", "product details"]);
+/** Seller and shipping lines, which aren't details of the product itself. */
+const SKIPPED_LABELS = new Set(["dispatch", "shipping", "delivery", "sold by", "supplier"]);
 
 /** Words that point to each category, matched against the product name. */
 const CATEGORY_KEYWORDS: Record<string, string[]> = {
@@ -154,6 +156,9 @@ function splitLabel(line: string): { label: string; value: string } | null {
   if (colon <= 0 || colon > 40) return null;
   const label = line.slice(0, colon).trim();
   if (/https?$/i.test(label) || label.split(/\s+/).length > 6) return null;
+  // A colon inside brackets is part of a value, as in "Free Size (Saree Length: 5.5 m)".
+  const opened = label.split("(").length - label.split(")").length;
+  if (opened !== 0) return null;
   return { label, value: line.slice(colon + 1).trim() };
 }
 
@@ -219,7 +224,15 @@ function makeSku(categorySlug: string): string {
 }
 
 /** Turns copied Meesho product text into product form values. */
-export function parseMeeshoText(text: string, categories: Category[]): MeeshoImport {
+/**
+ * `categoryHint` is extra text for guessing the category, such as Meesho's own category name
+ * ("Sarees"); it isn't shown anywhere.
+ */
+export function parseMeeshoText(
+  text: string,
+  categories: Category[],
+  categoryHint = "",
+): MeeshoImport {
   const lines = text
     .split(/\r?\n/)
     .map((line) => line.replace(/\s+/g, " ").trim())
@@ -257,13 +270,14 @@ export function parseMeeshoText(text: string, categories: Category[]): MeeshoImp
     if (NAME_LABELS.has(key)) title = value;
     else if (BRAND_LABELS.has(key)) brand = value;
     else if (DESCRIPTION_LABELS.has(key)) description = value;
+    else if (SKIPPED_LABELS.has(key)) continue;
     else specs.push({ label: pair.label, value });
   }
 
   title ||= looseLines[0] ?? "";
   brand ||= brandFromTitle(title);
   const categorySlug = guessCategory(
-    `${title} ${specs.map((spec) => spec.value).join(" ")}`,
+    `${categoryHint} ${title} ${specs.map((spec) => spec.value).join(" ")}`,
     categories,
   );
 

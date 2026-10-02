@@ -34,8 +34,16 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
         </h3>
       </Link>
       <div className="mt-auto flex flex-col gap-2 pt-2">
-        {product.rating !== undefined && (
+        {product.rating !== undefined ? (
           <ProductRating rating={product.rating} count={product.ratingCount} />
+        ) : (
+          product.meesho && (
+            <ProductRating
+              rating={product.meesho.rating}
+              count={product.meesho.ratingCount}
+              source="Meesho"
+            />
+          )
         )}
         <ProductPrice price={product.price} mrp={product.mrp} />
         <BuyNowButton productSlug={product.slug} productTitle={product.title} size="sm" compact />

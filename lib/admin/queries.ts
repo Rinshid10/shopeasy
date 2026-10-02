@@ -260,3 +260,38 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     returnWindowDays: row.return_window_days,
   };
 }
+
+export interface AdminReview {
+  id: string;
+  productSlug: string;
+  productTitle: string;
+  orderId: string;
+  reviewerName: string;
+  rating: number;
+  comment: string;
+  isHidden: boolean;
+  /** ISO date-time. */
+  createdAt: string;
+}
+
+/** Every customer review, newest first, including hidden ones. */
+export async function getAdminReviews(): Promise<AdminReview[]> {
+  const { supabase } = await requireAdmin();
+  const rows = unwrap(
+    await supabase
+      .from("product_reviews")
+      .select("*, products(slug, title)")
+      .order("created_at", { ascending: false }),
+  );
+  return rows.map((row) => ({
+    id: row.id,
+    productSlug: row.products?.slug ?? "",
+    productTitle: row.products?.title ?? "Removed product",
+    orderId: row.order_id,
+    reviewerName: row.reviewer_name,
+    rating: row.rating,
+    comment: row.comment,
+    isHidden: row.is_hidden,
+    createdAt: row.created_at,
+  }));
+}

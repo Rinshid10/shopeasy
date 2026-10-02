@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
         hostname: "kodjfjxztmjbjgcuyetn.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
+      // Photos Meesho buyers attached to their reviews, shown with those reviews.
+      {
+        protocol: "https",
+        hostname: "images.meesho.com",
+        pathname: "/images/ratings_reviews/**",
+      },
     ],
   },
   experimental: {

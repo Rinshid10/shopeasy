@@ -33,6 +33,10 @@
   /* Green for ratings and discount badges. */
   --color-positive: #15803d;
   --color-positive-soft: #dcfce7;
+  /* Rating bars, Meesho-style: green, green, yellow, orange, red from 5 stars down. */
+  --color-rating-good: #f4b740;
+  --color-rating-average: #ed8a3f;
+  --color-rating-poor: #e8323c;
 
   /* Promo banner gradients and price-tile text. White text stays readable on each. */
   --color-brand-light: #b02a93;
