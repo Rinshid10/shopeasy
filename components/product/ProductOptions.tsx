@@ -82,7 +82,7 @@ export function ProductOptions({ productSlug, options }: ProductOptionsProps) {
                     title={value}
                     onClick={pick}
                     className={cn(
-                      "size-9 rounded-full border-2 p-0.5",
+                      "size-9 rounded-full border-2 bg-surface p-0.5 raised-sm",
                       isSelected ? "border-brand" : "border-line hover:border-ink-muted",
                     )}
                   >
@@ -101,8 +101,8 @@ export function ProductOptions({ productSlug, options }: ProductOptionsProps) {
                     className={cn(
                       "min-w-14 rounded-lg border px-4 py-2 text-sm font-medium",
                       isSelected
-                        ? "border-brand bg-brand-soft text-brand"
-                        : "border-line bg-surface text-ink hover:border-ink-muted",
+                        ? "pressed-in"
+                        : "raised-button-light border-line bg-surface text-ink hover:border-ink-muted",
                     )}
                   >
                     {value}

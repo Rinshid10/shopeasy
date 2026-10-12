@@ -11,6 +11,7 @@ import {
 } from "@/lib/admin/product-form";
 import { requireAdmin } from "@/lib/admin/session";
 import { CATALOGUE_TAG } from "@/lib/catalogue-cache";
+import { STORE_SETTINGS_TAG } from "@/lib/store-settings";
 import { REVIEWS_TAG } from "@/lib/reviews";
 import {
   isMeeshoReviewImage,
@@ -33,6 +34,7 @@ function failure(error: { message: string; code?: string }): { ok: false; error:
 /** Shop pages are built ahead of time; rebuild them after a catalogue or settings change. */
 function refreshStore() {
   updateTag(CATALOGUE_TAG);
+  updateTag(STORE_SETTINGS_TAG);
   revalidatePath("/", "layout");
 }
 
@@ -219,6 +221,7 @@ export async function saveStoreSettings(settings: StoreSettings): Promise<Action
       is_cod_enabled: settings.isCodEnabled,
       cod_limit: settings.codLimit,
       return_window_days: settings.returnWindowDays,
+      theme: settings.theme,
     })
     .eq("id", true);
   if (error) return failure(error);

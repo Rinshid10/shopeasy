@@ -15,7 +15,7 @@ import { getProductBySlug, getProducts, getRelatedProducts } from "@/lib/product
 import { getProductOptions } from "@/lib/product-options";
 import { getReviewSummary } from "@/lib/reviews";
 import { routes } from "@/lib/routes";
-import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd, buildPageMetadata, productJsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import type { BreadcrumbItem } from "@/types";
 
@@ -73,6 +73,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     <>
       <Container width="narrow" className="flex flex-col gap-5 py-4 sm:gap-8 sm:py-6">
         <JsonLd data={breadcrumbJsonLd(breadcrumbs, routes.product(product.slug))} />
+        <JsonLd data={productJsonLd({ product, reviews, categoryName: category?.name })} />
         <Breadcrumbs items={breadcrumbs} />
         <div className="grid items-start gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] md:gap-6">
           <div className="md:sticky md:top-32">

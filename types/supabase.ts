@@ -617,6 +617,7 @@ export type Database = {
           return_window_days: number;
           store_name: string;
           support_phone: string;
+          theme: string;
           updated_at: string;
           whatsapp_number: string;
         };
@@ -632,6 +633,7 @@ export type Database = {
           return_window_days?: number;
           store_name?: string;
           support_phone?: string;
+          theme?: string;
           updated_at?: string;
           whatsapp_number?: string;
         };
@@ -647,6 +649,7 @@ export type Database = {
           return_window_days?: number;
           store_name?: string;
           support_phone?: string;
+          theme?: string;
           updated_at?: string;
           whatsapp_number?: string;
         };

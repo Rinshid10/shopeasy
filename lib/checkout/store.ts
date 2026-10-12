@@ -8,7 +8,7 @@ import type { Tables } from "@/types/supabase";
 // The product being bought, saved address and orders live in Supabase, under the visitor's
 // account. The shop has no cart: "Buy Now" selects one product for checkout (kept in the
 // cart_items table). Visitors get an anonymous account on their first Buy Now, then must log
-// in, or give their name and email, before the order is placed.
+// in with Google before the order is placed.
 //
 // Components read an in-memory copy through useCheckout(). Changes show at once and are then
 // written to the database in order; if a write fails, the copy is reloaded from the database.

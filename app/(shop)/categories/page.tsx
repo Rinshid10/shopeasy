@@ -20,7 +20,7 @@ export default async function CategoriesPage() {
   return (
     <Container width="narrow" className="flex flex-col gap-4 py-4 sm:py-6">
       <h1 className="text-xl font-bold text-ink sm:text-2xl">All Categories</h1>
-      <ul className="flex flex-col divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
+      <ul className="flex flex-col divide-y divide-line overflow-hidden rounded-2xl raised">
         {categories.map((category) => (
           <li key={category.slug}>
             <Link

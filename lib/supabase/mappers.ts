@@ -29,7 +29,6 @@ export function toSpecs(value: Json): ProductSpec[] {
   );
 }
 
-/** Reads the Meesho rating and reviews stored on a product, if it has a rating. */
 /** Most photos kept per Meesho review (Meesho allows more). */
 export const MAX_REVIEW_IMAGES = 4;
 
@@ -40,6 +39,7 @@ export function isMeeshoReviewImage(url: unknown): url is string {
   );
 }
 
+/** Reads the Meesho rating and reviews stored on a product, if it has a rating. */
 export function toMeeshoRatings(
   row: Pick<
     Tables<"products">,
@@ -96,6 +96,8 @@ export function toProduct(row: Tables<"products">): Product {
     pros: row.pros,
     cons: row.cons,
     isTopPick: row.is_top_pick,
+    inStock: row.stock > 0,
+    updatedAt: row.updated_at,
   };
 }
 

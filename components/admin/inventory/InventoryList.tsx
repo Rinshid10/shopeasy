@@ -91,7 +91,7 @@ export function InventoryList({ products }: InventoryListProps) {
                   </span>
                 </Link>
                 <StatusBadge status={stockLevelDisplay[levelOf(product)]} />
-                <div className="flex items-center overflow-hidden rounded-lg border border-line">
+                <div className="flex items-center overflow-hidden rounded-lg border border-line bg-surface raised-sm">
                   <button
                     type="button"
                     aria-label={`Remove one ${product.title} from stock`}
@@ -116,7 +116,7 @@ export function InventoryList({ products }: InventoryListProps) {
                 <button
                   type="button"
                   onClick={() => adjust(product.slug, 10)}
-                  className="rounded-lg border border-line px-2.5 py-2 text-xs font-semibold text-ink hover:border-brand hover:text-brand"
+                  className="raised-button-light rounded-lg border border-line bg-surface px-2.5 py-2 text-xs font-semibold text-ink hover:border-brand hover:text-brand"
                 >
                   +10
                 </button>

@@ -52,7 +52,7 @@ export function SearchForm() {
         placeholder="Search for products, brands and more..."
         autoComplete="off"
         onInput={updateResultsLive}
-        className="h-11 w-full rounded-full border border-transparent bg-surface-muted pr-4 pl-12 text-base text-ink placeholder:text-ink-muted focus:border-brand focus:bg-surface md:h-12 md:text-sm"
+        className="h-11 w-full rounded-full border border-transparent bg-surface-muted pr-4 pl-12 text-base text-ink sunken placeholder:text-ink-muted focus:border-brand focus:bg-surface md:h-12 md:text-sm"
       />
       <button
         type="submit"

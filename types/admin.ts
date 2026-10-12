@@ -112,4 +112,6 @@ export interface StoreSettings {
   isCodEnabled: boolean;
   codLimit: number;
   returnWindowDays: number;
+  /** A key from lib/themes.ts: the colours of the whole site. */
+  theme: string;
 }

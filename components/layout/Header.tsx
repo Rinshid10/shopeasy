@@ -22,7 +22,7 @@ export async function Header() {
   }));
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-surface">
+    <header className="sticky top-0 z-40 border-b border-line bg-surface raised-bar-top">
       <Container className="flex h-14 items-center gap-1 md:h-[4.5rem] md:gap-6 lg:gap-16 xl:gap-28">
         <MobileBackButton />
         <Logo />

@@ -61,7 +61,7 @@ export function ProductInfoTabs({ details, specifications }: ProductInfoTabsProp
           id={`panel-${tab.key}`}
           aria-labelledby={`tab-${tab.key}`}
           hidden={active !== tab.key}
-          className="mt-4 rounded-xl bg-surface-muted p-4 sm:p-5"
+          className="mt-4 rounded-xl bg-surface-muted p-4 sunken sm:p-5"
         >
           {tab.key === "details" ? details : specifications}
         </div>

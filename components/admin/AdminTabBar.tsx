@@ -20,7 +20,7 @@ export function AdminTabBar() {
   return (
     <nav
       aria-label="Admin"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden print:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] raised-bar-bottom lg:hidden print:hidden"
     >
       <ul className="grid grid-cols-4">
         {TABS.map((tab) => {

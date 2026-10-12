@@ -27,7 +27,7 @@ export function WishlistButton({ productSlug, productTitle, className }: Wishlis
         void toggleWishlist(productSlug);
       }}
       className={cn(
-        "flex size-9 items-center justify-center rounded-full bg-surface shadow-sm",
+        "flex size-9 items-center justify-center rounded-full bg-surface raised-sm",
         isHearted ? "text-brand" : "text-ink-muted hover:text-brand",
         className,
       )}

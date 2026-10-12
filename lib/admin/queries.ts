@@ -260,6 +260,7 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     isCodEnabled: row.is_cod_enabled,
     codLimit: row.cod_limit,
     returnWindowDays: row.return_window_days,
+    theme: row.theme,
   };
 }
 

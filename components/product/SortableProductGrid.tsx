@@ -38,7 +38,7 @@ export function SortableProductGrid({ products }: SortableProductGridProps) {
             id={selectId}
             value={sort}
             onChange={(event) => handleSortChange(event.target.value)}
-            className="h-10 rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink"
+            className="h-10 raised-button-light rounded-xl border border-line bg-surface px-3 text-sm font-medium text-ink"
           >
             {productSortOptions.map((option) => (
               <option key={option.value} value={option.value}>

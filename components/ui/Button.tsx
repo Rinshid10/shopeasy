@@ -13,17 +13,20 @@ interface ButtonStyleOptions {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "rounded-xl bg-ink text-surface hover:bg-ink-raised",
-  brand: "rounded-full bg-brand text-surface shadow-lg shadow-brand/25 hover:bg-brand-strong",
+  primary: "raised-button rounded-xl bg-ink text-surface hover:bg-ink-raised [--edge:#020617]",
+  brand:
+    "raised-button rounded-full bg-brand text-surface hover:bg-brand-light [--edge:var(--color-brand-strong)]",
   /** Filled purple: the main buy action. */
-  buy: "rounded-xl bg-brand text-surface hover:bg-brand-strong",
-  outline: "rounded-xl border border-line bg-surface text-ink hover:border-ink",
+  buy: "raised-button rounded-xl bg-brand text-surface hover:bg-brand-light [--edge:var(--color-brand-strong)]",
+  outline: "raised-button-light rounded-xl border border-line bg-surface text-ink hover:border-ink",
   /** Purple outline: a secondary action, e.g. Edit. */
-  "outline-brand": "rounded-xl border border-brand bg-surface text-brand hover:bg-brand-soft",
+  "outline-brand":
+    "raised-button-light rounded-xl border border-brand bg-surface text-brand hover:bg-brand-soft",
   /** Green: sends something to WhatsApp. */
-  whatsapp: "rounded-xl bg-positive text-surface hover:bg-positive/90",
+  whatsapp:
+    "raised-button rounded-xl bg-positive text-surface hover:bg-positive/90 [--edge:#166534]",
   /** Red: confirms something that can't be undone, such as cancelling an order. */
-  danger: "rounded-xl bg-negative text-surface hover:bg-negative/90",
+  danger: "raised-button rounded-xl bg-negative text-surface hover:bg-negative/90 [--edge:#991b1b]",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

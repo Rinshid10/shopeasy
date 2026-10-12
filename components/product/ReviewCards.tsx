@@ -61,7 +61,7 @@ export function ReviewCards({ reviews }: { reviews: ReviewCardData[] }) {
         {shown.map((review) => (
           <li
             key={review.key}
-            className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4"
+            className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4 raised-sm"
           >
             <div className="flex items-center gap-3">
               <span
@@ -130,7 +130,7 @@ function PhotoLink({ url, label, size }: { url: string; label: string; size: num
       href={url}
       target="_blank"
       rel="noopener noreferrer nofollow"
-      className="block overflow-hidden rounded-lg border border-line hover:border-brand"
+      className="block overflow-hidden rounded-lg border border-line raised-sm hover:border-brand"
     >
       <Image
         src={url}

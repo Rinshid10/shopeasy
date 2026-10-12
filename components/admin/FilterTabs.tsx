@@ -34,8 +34,8 @@ export function FilterTabs<T extends string>({ tabs, value, onChange, label }: F
             className={cn(
               "flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium whitespace-nowrap",
               isSelected
-                ? "border-ink bg-ink text-surface"
-                : "border-line bg-surface text-ink hover:border-ink",
+                ? "raised-button border-ink bg-ink text-surface [--edge:#020617]"
+                : "raised-button-light border-line bg-surface text-ink hover:border-ink",
             )}
           >
             {tab.label}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import type { BreadcrumbItem } from "@/types";
+import type { ReviewSummary } from "@/lib/reviews";
+import type { BreadcrumbItem, Product } from "@/types";
 import { siteConfig } from "./site-config";
 
 const OPEN_GRAPH_LOCALE = "en_IN";
@@ -103,5 +104,82 @@ export function breadcrumbJsonLd(items: BreadcrumbItem[], currentPath: string): 
       name: item.label,
       item: absoluteUrl(item.href ?? currentPath),
     })),
+  };
+}
+
+interface ProductJsonLdOptions {
+  product: Product;
+  /** The product's own customer reviews. Meesho's are left out: they were not given here. */
+  reviews: ReviewSummary;
+  categoryName?: string;
+}
+
+/**
+ * Rich-result data for a product: price, availability, pictures and, once this shop's own
+ * customers have reviewed it, the rating and the latest reviews.
+ */
+export function productJsonLd({
+  product,
+  reviews,
+  categoryName,
+}: ProductJsonLdOptions): JsonLdData {
+  const images = [product.imageUrl, ...product.extraImageUrls]
+    .filter((url): url is string => Boolean(url))
+    .map((url) => (url.startsWith("http") ? url : absoluteUrl(url)));
+  const description = product.description.trim() || product.shortDescription.trim();
+  return {
+    "@context": SCHEMA_CONTEXT,
+    "@type": "Product",
+    name: product.title,
+    description,
+    image: images,
+    url: absoluteUrl(`/product/${product.slug}`),
+    ...(product.brand && { brand: { "@type": "Brand", name: product.brand } }),
+    ...(categoryName && { category: categoryName }),
+    offers: {
+      "@type": "Offer",
+      url: absoluteUrl(`/product/${product.slug}`),
+      price: product.price,
+      priceCurrency: siteConfig.currency,
+      availability: `${SCHEMA_CONTEXT}/${product.inStock ? "InStock" : "OutOfStock"}`,
+      itemCondition: `${SCHEMA_CONTEXT}/NewCondition`,
+      seller: { "@type": "Organization", name: siteConfig.name },
+    },
+    ...(reviews.count > 0 && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: reviews.average,
+        reviewCount: reviews.count,
+        bestRating: 5,
+        worstRating: 1,
+      },
+      review: reviews.latest.slice(0, 5).map((review) => ({
+        "@type": "Review",
+        author: { "@type": "Person", name: review.reviewerName },
+        datePublished: review.createdAt.slice(0, 10),
+        reviewBody: review.comment,
+        reviewRating: { "@type": "Rating", ratingValue: review.rating, bestRating: 5 },
+      })),
+    }),
+  };
+}
+
+/** A listing page's products, in order, so search engines understand the page as a list. */
+export function productListJsonLd(name: string, path: string, products: Product[]): JsonLdData {
+  return {
+    "@context": SCHEMA_CONTEXT,
+    "@type": "CollectionPage",
+    name,
+    url: absoluteUrl(path),
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: products.length,
+      itemListElement: products.slice(0, 50).map((product, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: product.title,
+        url: absoluteUrl(`/product/${product.slug}`),
+      })),
+    },
   };
 }

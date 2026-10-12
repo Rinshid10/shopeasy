@@ -13,7 +13,7 @@ export default async function AdminLoginPage({ searchParams }: PageProps<"/admin
       id="main-content"
       className="flex min-h-dvh items-center justify-center bg-surface-muted px-4 py-10"
     >
-      <div className="flex w-full max-w-sm flex-col gap-6 rounded-2xl border border-line bg-surface p-6 shadow-sm">
+      <div className="flex w-full max-w-sm flex-col gap-6 rounded-2xl raised p-6 shadow-sm">
         <AdminBrand />
         <div>
           <h1 className="text-xl font-extrabold text-ink">Sign in to the admin</h1>

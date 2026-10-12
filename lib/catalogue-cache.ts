@@ -37,7 +37,7 @@ const loadCatalogue = unstable_cache(
       categories: categories.data.map(toCategory),
     };
   },
-  ["shop-catalogue-v8"],
+  ["shop-catalogue-v9"],
   { tags: [CATALOGUE_TAG], revalidate: 300 },
 );
 

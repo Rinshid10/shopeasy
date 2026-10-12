@@ -58,4 +58,8 @@ export interface Product {
   pros: string[];
   cons: string[];
   isTopPick: boolean;
+  /** False once the stock is 0; search engines are told either way. */
+  inStock: boolean;
+  /** ISO date-time the product was last changed, for the sitemap. */
+  updatedAt: string;
 }

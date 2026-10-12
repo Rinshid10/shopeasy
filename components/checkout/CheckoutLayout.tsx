@@ -39,7 +39,7 @@ export function CheckoutLayout({ step, title, summary, action, children }: Check
           </p>
         </aside>
       </div>
-      <div className="bottom-action-bar fixed inset-x-0 bottom-0 z-30 flex items-center gap-4 border-t border-line bg-surface px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-10px_24px_-14px_rgb(15_23_42/0.3)] md:hidden">
+      <div className="bottom-action-bar fixed inset-x-0 bottom-0 z-30 flex items-center gap-4 border-t border-line bg-surface px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] raised-bar-bottom md:hidden">
         <p className="flex flex-col">
           <span className="text-lg leading-tight font-extrabold text-ink">
             {formatPrice(summary.total)}

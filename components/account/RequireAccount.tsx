@@ -7,8 +7,8 @@ import { useCustomer } from "@/lib/auth/use-customer";
 import { routes } from "@/lib/routes";
 
 /**
- * Shows its content only to customers who may buy: logged in, or a guest who gave their name
- * and email. Everyone else is sent to the login page, then comes back here.
+ * Shows its content only to logged-in customers. Everyone else is sent to the login page,
+ * then comes back here.
  */
 export function RequireAccount({ children }: { children: ReactNode }) {
   const router = useRouter();

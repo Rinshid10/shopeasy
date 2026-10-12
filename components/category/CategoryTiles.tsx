@@ -29,7 +29,7 @@ export function CategoryTiles({ categories }: CategoryTilesProps) {
           <Link
             href={routes.category(category.slug)}
             className={cn(
-              "group flex h-full flex-col gap-1 rounded-2xl p-1.5 hover:-translate-y-1 hover:shadow-lg sm:gap-2 sm:p-3",
+              "group flex h-full flex-col gap-1 rounded-2xl p-1.5 raised-sm hover:border-brand/40 sm:gap-2 sm:p-3",
               tintClasses[category.tint],
             )}
           >

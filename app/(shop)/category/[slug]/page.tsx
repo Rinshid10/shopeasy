@@ -7,7 +7,7 @@ import { Container } from "@/components/ui/Container";
 import { getCategories, getCategoryBySlug } from "@/lib/categories";
 import { getProductsByCategory } from "@/lib/products";
 import { routes } from "@/lib/routes";
-import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd, buildPageMetadata, productListJsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import type { BreadcrumbItem } from "@/types";
 
@@ -49,6 +49,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     <>
       <Container className="flex flex-col gap-5 py-6 sm:gap-6 sm:py-8">
         <JsonLd data={breadcrumbJsonLd(breadcrumbs, routes.category(category.slug))} />
+        <JsonLd data={productListJsonLd(category.name, routes.category(category.slug), products)} />
         <Breadcrumbs items={breadcrumbs} />
         <header>
           <h1 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">

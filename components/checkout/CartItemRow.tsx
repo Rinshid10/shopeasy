@@ -39,7 +39,7 @@ export function CartItemRow({ line }: CartItemRowProps) {
         )}
         <ProductPrice price={product.price} mrp={product.mrp} />
         <div className="flex items-center gap-3">
-          <div className="flex items-center overflow-hidden rounded-lg border border-line">
+          <div className="flex items-center overflow-hidden rounded-lg border border-line bg-surface raised-sm">
             <button
               type="button"
               aria-label={`Decrease quantity of ${product.title}`}

@@ -133,7 +133,7 @@ function ReviewForm({ orderId, line, saved }: ReviewFormProps) {
               value={comment}
               placeholder="What did you like or dislike?"
               onChange={(event) => setComment(event.target.value)}
-              className="rounded-xl border border-line bg-surface px-3.5 py-3 text-base text-ink placeholder:text-ink-soft focus:border-brand"
+              className="rounded-xl border border-line bg-surface px-3.5 py-3 text-base text-ink sunken placeholder:text-ink-soft focus:border-brand"
             />
           </label>
           <Button variant="buy" className="self-start" disabled={isSaving} onClick={save}>

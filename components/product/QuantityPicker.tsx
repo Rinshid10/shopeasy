@@ -18,7 +18,7 @@ export function QuantityPicker({ productSlug }: { productSlug: string }) {
       <div
         role="group"
         aria-labelledby="quantity-label"
-        className="flex w-fit items-center overflow-hidden rounded-lg border border-line"
+        className="flex w-fit items-center overflow-hidden rounded-lg border border-line bg-surface raised-sm"
       >
         <button
           type="button"

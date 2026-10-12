@@ -19,10 +19,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, eager = false }: ProductCardProps) {
   return (
-    <Card
-      as="article"
-      className="relative flex h-full flex-col p-2.5 hover:-translate-y-1 hover:border-brand/30 hover:shadow-xl hover:shadow-ink/10 sm:p-3"
-    >
+    <Card as="article" className="relative flex h-full flex-col p-2.5 hover:border-brand/40 sm:p-3">
       <WishlistButton
         productSlug={product.slug}
         productTitle={product.title}

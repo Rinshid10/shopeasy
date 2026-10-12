@@ -6,6 +6,8 @@ import { SaveStatus, type SaveState } from "@/components/admin/SaveStatus";
 import { FormField, TextInput } from "@/components/checkout/FormField";
 import { Button } from "@/components/ui/Button";
 import { saveStoreSettings } from "@/lib/admin/actions";
+import { cn } from "@/lib/cn";
+import { THEMES } from "@/lib/themes";
 import type { StoreSettings } from "@/types";
 
 type TextKey = {
@@ -83,7 +85,7 @@ export function SettingsForm({ settings: initial }: SettingsFormProps) {
         </div>
       </AdminCard>
       <AdminCard title="Payments">
-        <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-line p-3">
+        <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-line bg-surface p-3 raised-sm">
           <span className="flex flex-col">
             <span className="text-sm font-semibold text-ink">Cash on Delivery</span>
             <span className="text-xs text-ink-muted">Customers pay when the order arrives.</span>
@@ -104,6 +106,43 @@ export function SettingsForm({ settings: initial }: SettingsFormProps) {
       </AdminCard>
       <AdminCard title="Returns">
         {number("returnWindowDays", "Return window (days after delivery)")}
+      </AdminCard>
+      <AdminCard
+        title="Theme"
+        description="The colour of buttons, links and highlights across the shop and this admin. Applies everywhere as soon as you save."
+        className="lg:col-span-2"
+      >
+        <div role="radiogroup" aria-label="Theme" className="grid grid-cols-3 gap-3 sm:grid-cols-5">
+          {THEMES.map((theme) => {
+            const isSelected = settings.theme === theme.key;
+            return (
+              <button
+                key={theme.key}
+                type="button"
+                role="radio"
+                aria-checked={isSelected}
+                onClick={() => set("theme", theme.key)}
+                className={cn(
+                  "flex flex-col items-center gap-2 rounded-xl border p-3 text-xs font-semibold",
+                  isSelected
+                    ? "border-ink bg-surface-muted text-ink"
+                    : "raised-button-light border-line bg-surface text-ink-muted hover:border-ink",
+                )}
+              >
+                <span
+                  aria-hidden="true"
+                  className="flex h-10 w-full overflow-hidden rounded-lg border border-line"
+                >
+                  <span className="flex-1" style={{ backgroundColor: theme.brand }} />
+                  <span className="flex-1" style={{ backgroundColor: theme.brandLight }} />
+                  <span className="flex-1" style={{ backgroundColor: theme.brandSoft }} />
+                </span>
+                {theme.name}
+                {isSelected && <span className="sr-only">(selected)</span>}
+              </button>
+            );
+          })}
+        </div>
       </AdminCard>
       <div className="flex flex-col gap-3 lg:col-span-2 lg:flex-row lg:items-center">
         <Button type="submit" variant="buy" size="lg" className="lg:w-56" disabled={isSaving}>

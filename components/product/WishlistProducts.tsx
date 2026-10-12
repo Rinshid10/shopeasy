@@ -22,7 +22,7 @@ export function WishlistProducts({ products }: { products: Product[] }) {
 
   if (hearted.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-12 text-center">
+      <div className="flex flex-col items-center gap-3 rounded-2xl raised px-4 py-12 text-center">
         <HeartIcon className="size-10 text-brand" />
         <p className="font-semibold text-ink">Your wishlist is empty</p>
         <p className="text-sm text-ink-muted">Tap the heart on a product to save it here.</p>

@@ -72,7 +72,7 @@ export function ProductGallery({ product, sizes }: ProductGalleryProps) {
       </div>
 
       {/* Wider screens: the large picture, with thumbnails underneath. */}
-      <div className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-4 max-md:hidden">
+      <div className="flex flex-col gap-4 rounded-2xl raised p-4 max-md:hidden">
         <div className="relative overflow-hidden rounded-xl bg-surface-muted">
           <WishlistButton
             productSlug={product.slug}
@@ -96,7 +96,7 @@ export function ProductGallery({ product, sizes }: ProductGalleryProps) {
                   aria-label={`Show picture ${index + 1} of ${pictures.length}`}
                   aria-pressed={index === selected}
                   className={cn(
-                    "relative block aspect-square w-full overflow-hidden rounded-lg border-2 bg-surface",
+                    "relative block aspect-square w-full overflow-hidden rounded-lg border-2 bg-surface raised-sm",
                     index === selected ? "border-brand" : "border-line hover:border-ink-muted",
                   )}
                 >
